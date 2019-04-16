@@ -24,10 +24,10 @@ def getIndexedArrayFromTrajectory(obs):
 
     #to get state to tensor mappings
     one_observation = trajTensor[0]
-    for x in range(x_values):
-        for y in range(y_values):
+    for x in range(0,x_values):
+        for y in range(0,y_values):
             one_state = one_observation[x][y]
-            state_code = one_state[1]
+            state_code = one_state[0]
             if state_code not in badStates:
                 stateToIndex[(x,y)] = state_indexer
                 indexToState[state_indexer] = (x,y)
@@ -35,11 +35,19 @@ def getIndexedArrayFromTrajectory(obs):
 
     state_sequence=[]
 
-    for i in range(steps):
+    for i in range(0,steps):
         one_observation = trajTensor[i]
-        #x =
-        #y =
-        pos = (x,y)
+
+        #find where the agent is
+        for x in range(0,x_values):
+            for y in range(0,y_values):
+                one_state = one_observation[x][y]
+                state_code = one_state[0]
+                if state_code == 10:
+                    x_agent = x
+                    y_agent = y
+
+        pos = (x_agent,y_agent)
         stateIndex = stateToIndex[pos]
         state_sequence = state_sequence.append(stateIndex)
 
