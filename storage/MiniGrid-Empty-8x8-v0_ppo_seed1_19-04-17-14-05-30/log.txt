@@ -1,0 +1,12 @@
+C:\Users\Junhao\Documents\GitHub\watch_and_learn\dependency\rl-starter-files\scripts\train.py --env MiniGrid-Empty-8x8-v0 --algo ppo
+
+Namespace(algo='ppo', batch_size=256, clip_eps=0.2, discount=0.99, entropy_coef=0.01, env='MiniGrid-Empty-8x8-v0', epochs=4, frames=10000000, frames_per_proc=None, gae_lambda=0.95, log_interval=1, lr=0.0007, max_grad_norm=0.5, mem=False, model=None, optim_alpha=0.99, optim_eps=1e-05, procs=16, recurrence=1, save_interval=0, seed=1, tb=False, text=False, value_loss_coef=0.5)
+
+C:\Users\Junhao\Documents\GitHub\watch_and_learn\dependency\rl-starter-files\scripts\train.py --env MiniGrid-Empty-8x8-v0 --algo ppo
+
+Namespace(algo='ppo', batch_size=256, clip_eps=0.2, discount=0.99, entropy_coef=0.01, env='MiniGrid-Empty-8x8-v0', epochs=4, frames=10000000, frames_per_proc=None, gae_lambda=0.95, log_interval=1, lr=0.0007, max_grad_norm=0.5, mem=False, model=None, optim_alpha=0.99, optim_eps=1e-05, procs=16, recurrence=1, save_interval=0, seed=1, tb=False, text=False, value_loss_coef=0.5)
+
+C:\Users\Junhao\Documents\GitHub\watch_and_learn\dependency\rl-starter-files\scripts\train.py --env MiniGrid-Empty-8x8-v0 --algo ppo
+
+Namespace(algo='ppo', batch_size=256, clip_eps=0.2, discount=0.99, entropy_coef=0.01, env='MiniGrid-Empty-8x8-v0', epochs=4, frames=10000000, frames_per_proc=None, gae_lambda=0.95, log_interval=1, lr=0.0007, max_grad_norm=0.5, mem=False, model=None, optim_alpha=0.99, optim_eps=1e-05, procs=16, recurrence=1, save_interval=0, seed=1, tb=False, text=False, value_loss_coef=0.5)
+

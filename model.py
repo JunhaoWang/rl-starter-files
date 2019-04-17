@@ -4,6 +4,8 @@ import torch.nn.functional as F
 from torch.distributions.categorical import Categorical
 import torch_ac
 import gym
+# note grid_seq_2_idx_seq should only be used when FullyObsWrapper is used
+from utils.misc import grid_seq_2_idx_seq
 
 # Function from https://github.com/ikostrikov/pytorch-a2c-ppo-acktr/blob/master/model.py
 def initialize_parameters(m):
@@ -17,6 +19,11 @@ def initialize_parameters(m):
 class ACModel(nn.Module, torch_ac.RecurrentACModel):
     def __init__(self, obs_space, action_space, use_memory=False, use_text=False):
         super().__init__()
+
+        # Collect set of trajectory sequence information (state_sequence, state_space_cardinality, grid_shape,
+        # state_value_value) encoded by discrete state. Note it should only be used for discrete state when FullyObsWrapper
+        # is used.
+        self.traj_info_set = []
 
         # Decide which components are enabled
         self.use_text = use_text
@@ -81,6 +88,10 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
         return self.image_embedding_size
 
     def forward(self, obs, memory):
+        # note grid_seq_2_idx_seq should only be used when FullyObsWrapper is used
+        # idx_seq_info contains [state_idx_seq, state_idx_max, grid_shape, state_value_seq]
+        idx_seq_info = list(grid_seq_2_idx_seq(obs.image))
+
         x = torch.transpose(torch.transpose(obs.image, 1, 3), 2, 3)
         x = self.image_conv(x)
         x = x.reshape(x.shape[0], -1)
@@ -102,6 +113,10 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
 
         x = self.critic(embedding)
         value = x.squeeze(1)
+
+        idx_seq_info.append(value.tolist())
+
+        self.traj_info_set.append(tuple(idx_seq_info))
 
         return dist, value, memory
 

@@ -1,0 +1,34 @@
+C:\Users\Junhao\Documents\GitHub\watch_and_learn\dependency\rl-starter-files\scripts\train.py --env MiniGrid-Empty-8x8-v0 --algo ppo
+
+Namespace(algo='ppo', batch_size=256, clip_eps=0.2, discount=0.99, entropy_coef=0.01, env='MiniGrid-Empty-8x8-v0', epochs=4, frames=10000000, frames_per_proc=None, gae_lambda=0.95, log_interval=1, lr=0.0007, max_grad_norm=0.5, mem=False, model=None, optim_alpha=0.99, optim_eps=1e-05, procs=16, recurrence=1, save_interval=0, seed=1, tb=False, text=False, value_loss_coef=0.5)
+
+Model successfully created
+
+ACModel(
+  (image_conv): Sequential(
+    (0): Conv2d(3, 16, kernel_size=(2, 2), stride=(1, 1))
+    (1): ReLU()
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+    (3): Conv2d(16, 32, kernel_size=(2, 2), stride=(1, 1))
+    (4): ReLU()
+    (5): Conv2d(32, 64, kernel_size=(2, 2), stride=(1, 1))
+    (6): ReLU()
+  )
+  (actor): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): Tanh()
+    (2): Linear(in_features=64, out_features=7, bias=True)
+  )
+  (critic): Sequential(
+    (0): Linear(in_features=64, out_features=64, bias=True)
+    (1): Tanh()
+    (2): Linear(in_features=64, out_features=1, bias=True)
+  )
+)
+
+CUDA available: True
+
+U 1 | F 002048 | FPS 0569 | D 3 | rR:mu sigma m M 0.04 0.14 0.00 0.56 | F:mu sigma m M 7.8 30.3 0.0 125.0 | H 1.660 | V -0.216 | pL -0.043 | vL 0.137 | delta 1.134
+U 2 | F 004096 | FPS 0904 | D 5 | rR:mu sigma m M 0.07 0.15 0.00 0.56 | F:mu sigma m M 242.2 34.7 125.0 256.0 | H 1.640 | V -0.208 | pL -0.079 | vL 0.045 | delta 0.470
+U 3 | F 006144 | FPS 0903 | D 8 | rR:mu sigma m M 0.05 0.15 0.00 0.60 | F:mu sigma m M 245.8 34.5 113.0 256.0 | H 1.651 | V -0.053 | pL -0.026 | vL 0.021 | delta 0.343
+U 4 | F 008192 | FPS 0828 | D 10 | rR:mu sigma m M 0.04 0.15 0.00 0.60 | F:mu sigma m M 247.1 34.6 113.0 256.0 | H 1.644 | V -0.036 | pL -0.012 | vL 0.005 | delta 0.193
