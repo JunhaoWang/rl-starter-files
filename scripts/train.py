@@ -10,6 +10,7 @@ import sys
 
 import utils
 from model import ACModel
+from model_flat import ACModelFlat
 from gym_minigrid.wrappers import FullyObsWrapper
 # Parse arguments
 
@@ -60,6 +61,8 @@ parser.add_argument("--recurrence", type=int, default=1,
                     help="number of timesteps gradient is backpropagated (default: 1)\nIf > 1, a LSTM is added to the model to have memory")
 parser.add_argument("--text", action="store_true", default=False,
                     help="add a GRU to the model to handle text input")
+parser.add_argument("--full-obs", type=int, default=0, help="full-obs")
+parser.add_argument("--flat-model", type=int, default=0, help="use flat neural architecture nstead of CNN")
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
@@ -92,7 +95,8 @@ if __name__ == '__main__':
     envs = []
     for i in range(args.procs):
         env = gym.make(args.env)
-        env = FullyObsWrapper(env)
+        if args.full_obs:
+            env = FullyObsWrapper(env)
         env.seed(args.seed + 10000*i)
         envs.append(env)
 
@@ -113,8 +117,12 @@ if __name__ == '__main__':
         acmodel = utils.load_model(model_dir)
         logger.info("Model successfully loaded\n")
     except OSError:
-        acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text)
-        logger.info("Model successfully created\n")
+        if args.flat_model:
+            acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
+            logger.info("Flat model successfully created\n")
+        else:
+            acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text)
+            logger.info("Non-flat model successfully created\n")
     logger.info("{}\n".format(acmodel))
 
     if torch.cuda.is_available():
@@ -191,7 +199,8 @@ if __name__ == '__main__':
         # Save vocabulary, model and status
 
         if args.save_interval > 0 and update % args.save_interval == 0:
-            preprocess_obss.vocab.save()
+            if not args.flat_model:
+                preprocess_obss.vocab.save()
 
             if torch.cuda.is_available():
                 acmodel.cpu()
