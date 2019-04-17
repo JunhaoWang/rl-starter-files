@@ -5,7 +5,7 @@ import numpy as np
 
 def getIndexedArrayFromTrajectory(obs):
     #states that are not real states
-    badStates=[2,5,6]
+    badStates=[0,1,2,5,6,7]
 
     trajTensor = torch.transpose(torch.transpose(obs.image, 1, 3), 2, 3)
     trajTensor = np.array(trajTensor)
@@ -52,7 +52,3 @@ def getIndexedArrayFromTrajectory(obs):
         state_sequence = state_sequence.append(stateIndex)
 
     return state_sequence, stateToIndex, indexToState
-
-
-
-
