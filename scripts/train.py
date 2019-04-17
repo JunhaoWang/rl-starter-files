@@ -11,7 +11,7 @@ import sys
 
 import utils
 from model import ACModel
-
+from gym_minigrid.wrappers import FullyObsWrapper
 # Parse arguments
 
 parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
@@ -93,6 +93,7 @@ if __name__ == '__main__':
     envs = []
     for i in range(args.procs):
         env = gym.make(args.env)
+        env = FullyObsWrapper(env)
         env.seed(args.seed + 10000*i)
         envs.append(env)
 
