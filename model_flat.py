@@ -121,6 +121,8 @@ class ACModelFlat(nn.Module, torch_ac.RecurrentACModel):
         x = self.critic(embedding)
         value = x.squeeze(1)
 
+        idx_seq_info.append(value.tolist())
+
         self.traj_info_set.append(tuple(idx_seq_info))
 
         return dist, value, memory
