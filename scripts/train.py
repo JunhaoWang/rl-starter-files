@@ -12,6 +12,9 @@ import utils
 from model import ACModel
 from model_flat import ACModelFlat
 from gym_minigrid.wrappers import FullyObsWrapper
+import matplotlib.pyplot as plt
+from utils.misc import getSSRep
+from utils.aggregators import aggregateAverage, aggregateVAE
 # Parse arguments
 
 parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
@@ -62,7 +65,7 @@ parser.add_argument("--recurrence", type=int, default=1,
 parser.add_argument("--text", action="store_true", default=False,
                     help="add a GRU to the model to handle text input")
 parser.add_argument("--full-obs", type=int, default=0, help="full-obs")
-parser.add_argument("--flat-model", type=int, default=0, help="use flat neural architecture nstead of CNN")
+parser.add_argument("--flat-model", type=int, default=0, help="use flat neural architecture instead of CNN")
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
@@ -149,7 +152,12 @@ if __name__ == '__main__':
     update = status["update"]
 
     while num_frames < args.frames:
-        # Update model parameters
+        # visualize state representation
+        SSrep = getSSRep(acmodel.traj_info_set, 0, 1000, aggregator=None, method='vanilla').reshape(
+            tuple(acmodel.traj_info_set[0][2]))
+        plt.imshow(SSrep)
+        plt.show()
+    # Update model parameters
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
@@ -168,7 +176,6 @@ if __name__ == '__main__':
             return_per_episode = utils.synthesize(logs["return_per_episode"])
             rreturn_per_episode = utils.synthesize(logs["reshaped_return_per_episode"])
             num_frames_per_episode = utils.synthesize(logs["num_frames_per_episode"])
-
             header = ["update", "frames", "FPS", "duration"]
             data = [update, num_frames, fps, duration]
             header += ["rreturn_" + key for key in rreturn_per_episode.keys()]
