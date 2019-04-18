@@ -152,12 +152,13 @@ if __name__ == '__main__':
     update = status["update"]
 
     while num_frames < args.frames:
-        # visualize state representation
-        SSrep = getSSRep(acmodel.traj_info_set, 0, 1000, aggregator=None, method='vanilla').reshape(
-            tuple(acmodel.traj_info_set[0][2]))
-        plt.imshow(SSrep)
-        plt.show()
-    # Update model parameters
+        # # visualize state representation
+        # if len(acmodel.traj_info_set) > 0 and len(acmodel.traj_info_set) % 100 == 1:
+        #     SSrep = getSSRep(acmodel.traj_info_set, 0, 1000, aggregator=None, method='vanilla').reshape(
+        #         tuple(acmodel.traj_info_set[0][2]))
+        #     plt.imshow(SSrep)
+        #     plt.show()
+        # Update model parameters
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
