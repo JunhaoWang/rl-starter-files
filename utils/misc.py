@@ -21,9 +21,12 @@ def grid_seq_2_idx_seq(grid_seq):
     """
     grid_shape = list(grid_seq.shape[1:3])
     flat_grid_seq = grid_seq[:, :, :, 0].reshape(grid_seq.shape[0], -1)
-    idx_max = flat_grid_seq.shape[-1]
-    idx_seq = torch.argmax(flat_grid_seq, dim=-1).tolist()
-    return idx_seq, idx_max, grid_shape
+    idx_seq = torch.argmax(flat_grid_seq, dim=-1)
+    row_idx = torch.div(idx_seq, grid_shape[1])
+    col_idx = torch.remainder(idx_seq,grid_shape[1])
+    coord_idx = torch.transpose(torch.cat((row_idx.unsqueeze(0),col_idx.unsqueeze(0)),0),0,1)
+
+    return coord_idx
 
 
 def getSSRepHelperEveryVisit(vectorTraj, numState):
@@ -106,7 +109,7 @@ def getSSRepHelperMeta(matrixTraj, numState, aggregator, method='vanilla'):
     else:
         raise Exception('not implemented')
 
-
+# This is wrong, need to be replaced with David code
 def getSSRep(traj_info_set, start_idx, end_idx, aggregator, method='vanilla'):
     subset_traj_info = traj_info_set[start_idx:end_idx]
     matrixTraj = list(map(lambda x: x[0], subset_traj_info))

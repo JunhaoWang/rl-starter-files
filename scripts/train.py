@@ -158,6 +158,7 @@ if __name__ == '__main__':
         #         tuple(acmodel.traj_info_set[0][2]))
         #     plt.imshow(SSrep)
         #     plt.show()
+
         # Update model parameters
 
         update_start_time = time.time()
