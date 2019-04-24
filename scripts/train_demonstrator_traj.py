@@ -20,6 +20,8 @@ from utils.misc import getSSRep
 from utils.aggregators import aggregateAverage, aggregateVAE
 from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, getStateIndexTraj
 
+
+
 # Parse arguments
 
 parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
@@ -232,15 +234,15 @@ if __name__ == '__main__':
         with open('optimal_trajs_{}.pkl'.format(args.env), 'wb') as f:
             pickle.dump(optimal_trajs, f)
 
-    print(acmodel.obs_list[0])
-
-    stateToIndex, indexToState = getIndexedArrayFromTrajectory(acmodel.obs_list[0])
+    stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
     stateOccupancyList = []
 
-    for i in range(len(acmodel.obs_list),len(acmodel.obs_list)-samples):
-        indexedTraj = getIndexedArrayFromTrajectory(obs_list[i],stateToIndex, indexToState)
+    for i in range(len(optimal_trajs)):
+        indexedTraj = getIndexedArrayFromTrajectory(optimal_trajs[i],stateToIndex, indexToState)
         stateOccupancyList.append(indexedTraj)
 
-    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,)
+    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateAverage,method='every')
+
+
 
