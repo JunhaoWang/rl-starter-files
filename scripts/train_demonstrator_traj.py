@@ -9,6 +9,7 @@ import time
 import datetime
 import torch
 import torch_ac
+import numpy as np
 import sys
 
 import utils
@@ -108,6 +109,7 @@ utils.seed(args.seed)
 # Generate environments
 if __name__ == '__main__':
     envs = []
+    args.full_obs=1
     for i in range(args.procs):
         env = gym.make(args.env)
         if args.full_obs:
@@ -173,7 +175,10 @@ if __name__ == '__main__':
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
-        optimal_trajs.append(exps.obs.image)
+        add=exps.obs.image
+        trajTensor = torch.transpose(torch.transpose(add, 1, 3), 2, 3)
+        add = np.array(add)
+        optimal_trajs.append(add)
         logs2 = algo.update_parameters(exps)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
@@ -236,11 +241,18 @@ if __name__ == '__main__':
     print('pickling optimal trajectories')
     if RECORD_OPTIMAL_TRAJ:
         import pickle
-        optimal_trajs = list(map(lambda x: x.cpu(), optimal_trajs[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]))
+
+        #optimal_trajs_out=optimal_trajs[len(optimal_trajs):(optimal_trajs-10)]
+        #optimal_trajs_out = optimal_trajs[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]
         with open('optimal_trajs_{}.pkl'.format(args.env), 'wb') as f:
-            pickle.dump(optimal_trajs, f)
+            pickle.dump(optimal_trajs_out, f)
     else:
         raise Exception('optimality not reached')
+
+    optimal_trajs=optimal_trajs_out
+    print(optimal_trajs)
+    optimal_trajs=np.array(optimal_trajs)
+    print(optimal_trajs.shape)
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
