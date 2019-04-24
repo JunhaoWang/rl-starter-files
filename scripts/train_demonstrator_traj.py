@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
     while num_frames < args.frames:
         # # visualize state representation
-        # if len(acmodel.traj_info_set) > 0 and len(acmodel.traj_info_set) % 100 == 1:
+        if len(acmodel.traj_info_set) > 0 and len(acmodel.traj_info_set) % 100 == 1:
         #     SSrep = getSSRep(acmodel.traj_info_set, 0, 1000, aggregator=None, method='vanilla').reshape(
         #         tuple(acmodel.traj_info_set[0][2]))
         #     plt.imshow(SSrep)
@@ -208,10 +208,17 @@ if __name__ == '__main__':
 
 #get the state occupancy distribution for the demonstrator trajectories         
 
+
+
 print(acmodel.obs_list[0])
 
 stateToIndex, indexToState = getIndexedArrayFromTrajectory(acmodel.obs_list[0])
 
-for i in range(num_frames):
+stateOccupancyList = []
+
+for i in range(len(acmodel.obs_list),len(acmodel.obs_list)-samples):
     indexedTraj = getIndexedArrayFromTrajectory(obs_list[i],stateToIndex, indexToState)
-    
+    stateOccupancyList.append(indexedTraj)
+
+stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,)
+
