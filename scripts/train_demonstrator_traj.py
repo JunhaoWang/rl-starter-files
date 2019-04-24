@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 from utils.misc import getSSRep
 from utils.aggregators import aggregateAverage, aggregateVAE
 from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, getStateIndexTraj
+from utils.misc import getSSRepHelperMeta
 
 
 
@@ -178,7 +179,10 @@ if __name__ == '__main__':
         add=exps.obs.image
         trajTensor = torch.transpose(torch.transpose(add, 1, 3), 2, 3)
         add = np.array(add)
+        optimal_trajs=list(optimal_trajs)
         optimal_trajs.append(add)
+        optimal_trajs=np.array(optimal_trajs)
+        print(optimal_trajs.shape)
         logs2 = algo.update_parameters(exps)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
@@ -213,9 +217,9 @@ if __name__ == '__main__':
             if mean_performance_lowerbound > PERFORMANCE_THRESHOLD:
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
-                OPTIMAL_TRAJ_START_IDX = len(acmodel.obs_list)
+                OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
                 PERFORMANCE_THRESHOLD = 100
-            if RECORD_OPTIMAL_TRAJ and len(acmodel.obs_list) - OPTIMAL_TRAJ_START_IDX > MAX_SAMPLE:
+            if RECORD_OPTIMAL_TRAJ and optimal_trajs.shape[0] - OPTIMAL_TRAJ_START_IDX > MAX_SAMPLE:
                 print('agent sucessfully collected {} trajectories'.format(MAX_SAMPLE))
                 break
 
@@ -241,26 +245,27 @@ if __name__ == '__main__':
     print('pickling optimal trajectories')
     if RECORD_OPTIMAL_TRAJ:
         import pickle
-
         #optimal_trajs_out=optimal_trajs[len(optimal_trajs):(optimal_trajs-10)]
-        #optimal_trajs_out = optimal_trajs[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]
+        optimal_trajs_out = optimal_trajs[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]
         with open('optimal_trajs_{}.pkl'.format(args.env), 'wb') as f:
             pickle.dump(optimal_trajs_out, f)
     else:
         raise Exception('optimality not reached')
 
     optimal_trajs=optimal_trajs_out
-    print(optimal_trajs)
     optimal_trajs=np.array(optimal_trajs)
     print(optimal_trajs.shape)
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
+    print(stateToIndex)
     stateOccupancyList = []
 
     for i in range(len(optimal_trajs)):
         indexedTraj = getStateIndexTraj(optimal_trajs[i],stateToIndex, indexToState)
         stateOccupancyList.append(indexedTraj)
+
+    print(stateOccupancyList)
 
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateAverage,method='every')
 
