@@ -24,6 +24,7 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
         # state_value_value) encoded by discrete state. Note it should only be used for discrete state when FullyObsWrapper
         # is used.
         self.traj_info_set = []
+        self.obs_list = []
 
         # Decide which components are enabled
         self.use_text = use_text
@@ -91,6 +92,7 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
         # note grid_seq_2_idx_seq should only be used when FullyObsWrapper is used
         # idx_seq_info contains [state_idx_seq, state_idx_max, grid_shape, state_value_seq]
         idx_seq_info = list(grid_seq_2_idx_seq(obs.image))
+        self.obs_list.append(obs.image)
 
         x = torch.transpose(torch.transpose(obs.image, 1, 3), 2, 3)
         x = self.image_conv(x)
