@@ -78,8 +78,8 @@ args.mem = args.recurrence > 1
 
 # Define run dir
 ## important constant
-MAX_SAMPLE = 10000
-PERFORMANCE_THRESHOLD = 0
+MAX_SAMPLE = 10
+PERFORMANCE_THRESHOLD = 0.85
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -159,6 +159,8 @@ if __name__ == '__main__':
     total_start_time = time.time()
     update = status["update"]
 
+    optimal_trajs=[]
+
     while num_frames < args.frames:
         # # visualize state representation
         # if len(acmodel.traj_info_set) > 0 and len(acmodel.traj_info_set) % 100 == 1:
@@ -171,6 +173,7 @@ if __name__ == '__main__':
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
+        optimal_trajs.append(exps.obs.image)
         logs2 = algo.update_parameters(exps)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
@@ -207,9 +210,10 @@ if __name__ == '__main__':
                 RECORD_OPTIMAL_TRAJ = True
                 OPTIMAL_TRAJ_START_IDX = len(acmodel.obs_list)
                 PERFORMANCE_THRESHOLD = 100
-            if len(acmodel.obs_list) - OPTIMAL_TRAJ_START_IDX > MAX_SAMPLE:
+            if RECORD_OPTIMAL_TRAJ and len(acmodel.obs_list) - OPTIMAL_TRAJ_START_IDX > MAX_SAMPLE:
                 print('agent sucessfully collected {} trajectories'.format(MAX_SAMPLE))
                 break
+
             ######################################################
 
             header += ["return_" + key for key in return_per_episode.keys()]
@@ -226,23 +230,28 @@ if __name__ == '__main__':
 
             status = {"num_frames": num_frames, "update": update}
 
-    #get the state occupancy distribution for the demonstrator trajectories
 
+
+    #get the state occupancy distribution for the demonstrator trajectories
+    print('pickling optimal trajectories')
     if RECORD_OPTIMAL_TRAJ:
         import pickle
-        optimal_trajs = list(map(lambda x: x.cpu(), acmodel.obs_list[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]))
+        optimal_trajs = list(map(lambda x: x.cpu(), optimal_trajs[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]))
         with open('optimal_trajs_{}.pkl'.format(args.env), 'wb') as f:
             pickle.dump(optimal_trajs, f)
+    else:
+        raise Exception('optimality not reached')
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
     stateOccupancyList = []
 
     for i in range(len(optimal_trajs)):
-        indexedTraj = getIndexedArrayFromTrajectory(optimal_trajs[i],stateToIndex, indexToState)
+        indexedTraj = getStateIndexTraj(optimal_trajs[i],stateToIndex, indexToState)
         stateOccupancyList.append(indexedTraj)
 
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateAverage,method='every')
+
 
 
 
