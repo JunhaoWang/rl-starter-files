@@ -75,6 +75,11 @@ args = parser.parse_args()
 args.mem = args.recurrence > 1
 
 # Define run dir
+## important constant
+MAX_SAMPLE = 10000
+PERFORMANCE_THRESHOLD = 0
+RECORD_OPTIMAL_TRAJ = False
+OPTIMAL_TRAJ_START_IDX = -1
 
 suffix = datetime.datetime.now().strftime("%y-%m-%d-%H-%M-%S")
 default_model_name = "{}_{}_seed{}_{}".format(args.env, args.algo, args.seed, suffix)
@@ -154,7 +159,7 @@ if __name__ == '__main__':
 
     while num_frames < args.frames:
         # # visualize state representation
-        if len(acmodel.traj_info_set) > 0 and len(acmodel.traj_info_set) % 100 == 1:
+        # if len(acmodel.traj_info_set) > 0 and len(acmodel.traj_info_set) % 100 == 1:
         #     SSrep = getSSRep(acmodel.traj_info_set, 0, 1000, aggregator=None, method='vanilla').reshape(
         #         tuple(acmodel.traj_info_set[0][2]))
         #     plt.imshow(SSrep)
@@ -191,6 +196,19 @@ if __name__ == '__main__':
             logger.info(
                 "U {} | F {:06} | FPS {:04.0f} | D {} | rR:mu sigma m M {:.2f} {:.2f} {:.2f} {:.2f} | F:mu sigma m M {:.1f} {:.1f} {} {} | H {:.3f} | V {:.3f} | pL {:.3f} | vL {:.3f} | delta {:.3f}"
                 .format(*data))
+            ######################################################
+
+            # get optimal trajectory after reaching optimality
+            mean_performance_lowerbound = data[4] - data[5]
+            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD:
+                print('agent reach optimality, start collecting trajectories')
+                RECORD_OPTIMAL_TRAJ = True
+                OPTIMAL_TRAJ_START_IDX = len(acmodel.obs_list)
+                PERFORMANCE_THRESHOLD = 100
+            if len(acmodel.obs_list) - OPTIMAL_TRAJ_START_IDX > MAX_SAMPLE:
+                print('agent sucessfully collected {} trajectories'.format(MAX_SAMPLE))
+                break
+            ######################################################
 
             header += ["return_" + key for key in return_per_episode.keys()]
             data += return_per_episode.values()
@@ -206,19 +224,23 @@ if __name__ == '__main__':
 
             status = {"num_frames": num_frames, "update": update}
 
-#get the state occupancy distribution for the demonstrator trajectories         
+    #get the state occupancy distribution for the demonstrator trajectories
 
+    if RECORD_OPTIMAL_TRAJ:
+        import pickle
+        optimal_trajs = list(map(lambda x: x.cpu(), acmodel.obs_list[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]))
+        with open('optimal_trajs_{}.pkl'.format(args.env), 'wb') as f:
+            pickle.dump(optimal_trajs, f)
 
+    print(acmodel.obs_list[0])
 
-print(acmodel.obs_list[0])
+    stateToIndex, indexToState = getIndexedArrayFromTrajectory(acmodel.obs_list[0])
 
-stateToIndex, indexToState = getIndexedArrayFromTrajectory(acmodel.obs_list[0])
+    stateOccupancyList = []
 
-stateOccupancyList = []
+    for i in range(len(acmodel.obs_list),len(acmodel.obs_list)-samples):
+        indexedTraj = getIndexedArrayFromTrajectory(obs_list[i],stateToIndex, indexToState)
+        stateOccupancyList.append(indexedTraj)
 
-for i in range(len(acmodel.obs_list),len(acmodel.obs_list)-samples):
-    indexedTraj = getIndexedArrayFromTrajectory(obs_list[i],stateToIndex, indexToState)
-    stateOccupancyList.append(indexedTraj)
-
-stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,)
+    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,)
 
