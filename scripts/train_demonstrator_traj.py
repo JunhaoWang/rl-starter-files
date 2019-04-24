@@ -117,12 +117,10 @@ if __name__ == '__main__':
 
     status = {"num_frames": 0, "update": 0}
 
-    if args.flat_model:
-        acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
-        logger.info("Flat model successfully created\n")
-    else:
-        acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text)
-        logger.info("Non-flat model successfully created\n")
+    acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
+    logger.info("Flat model successfully created\n")
+
+
     logger.info("{}\n".format(acmodel))
 
 
@@ -144,7 +142,7 @@ if __name__ == '__main__':
         algo = torch_ac.PPOAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
                                 args.entropy_coef, args.value_loss_coef, args.max_grad_norm, args.recurrence,
                                 args.optim_eps, args.clip_eps, args.epochs, args.batch_size, preprocess_obss,
-                                useKL)
+                                None,useKL)
     else:
         raise ValueError("Incorrect algorithm name: {}".format(args.algo))
 
@@ -209,5 +207,11 @@ if __name__ == '__main__':
             status = {"num_frames": num_frames, "update": update}
 
 #get the state occupancy distribution for the demonstrator trajectories         
-        
-print(acmodel.traj_info_set)
+
+print(acmodel.obs_list[0])
+
+stateToIndex, indexToState = getIndexedArrayFromTrajectory(acmodel.obs_list[0])
+
+for i in range(num_frames):
+    indexedTraj = getIndexedArrayFromTrajectory(obs_list[i],stateToIndex, indexToState)
+    
