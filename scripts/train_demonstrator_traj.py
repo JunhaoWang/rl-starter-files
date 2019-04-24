@@ -76,8 +76,8 @@ args.mem = args.recurrence > 1
 
 # Define run dir
 ## important constant
-MAX_SAMPLE = 10000
-PERFORMANCE_THRESHOLD = 0
+MAX_SAMPLE = 10
+PERFORMANCE_THRESHOLD = 0.85
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -205,9 +205,10 @@ if __name__ == '__main__':
                 RECORD_OPTIMAL_TRAJ = True
                 OPTIMAL_TRAJ_START_IDX = len(acmodel.obs_list)
                 PERFORMANCE_THRESHOLD = 100
-            if len(acmodel.obs_list) - OPTIMAL_TRAJ_START_IDX > MAX_SAMPLE:
+            if RECORD_OPTIMAL_TRAJ and len(acmodel.obs_list) - OPTIMAL_TRAJ_START_IDX > MAX_SAMPLE:
                 print('agent sucessfully collected {} trajectories'.format(MAX_SAMPLE))
                 break
+
             ######################################################
 
             header += ["return_" + key for key in return_per_episode.keys()]
@@ -225,22 +226,12 @@ if __name__ == '__main__':
             status = {"num_frames": num_frames, "update": update}
 
     #get the state occupancy distribution for the demonstrator trajectories
-
+    print('pickling optimal trajectories')
     if RECORD_OPTIMAL_TRAJ:
         import pickle
         optimal_trajs = list(map(lambda x: x.cpu(), acmodel.obs_list[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]))
         with open('optimal_trajs_{}.pkl'.format(args.env), 'wb') as f:
             pickle.dump(optimal_trajs, f)
-
-    print(acmodel.obs_list[0])
-
-    stateToIndex, indexToState = getIndexedArrayFromTrajectory(acmodel.obs_list[0])
-
-    stateOccupancyList = []
-
-    for i in range(len(acmodel.obs_list),len(acmodel.obs_list)-samples):
-        indexedTraj = getIndexedArrayFromTrajectory(obs_list[i],stateToIndex, indexToState)
-        stateOccupancyList.append(indexedTraj)
-
-    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,)
+    else:
+        raise Exception('optimality not reached')
 
