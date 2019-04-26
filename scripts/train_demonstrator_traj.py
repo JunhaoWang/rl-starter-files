@@ -21,6 +21,7 @@ from utils.misc import getSSRep
 from utils.aggregators import aggregateAverage, aggregateVAE
 from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, getStateIndexTraj
 from utils.misc import getSSRepHelperMeta
+from torch_ac.utils import DictList
 
 
 
@@ -78,10 +79,47 @@ parser.add_argument("--flat-model", type=int, default=0, help="use flat neural a
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
+
+#TODO : put that in utils
+def make_dem(nb_trajs, model):
+    obss = []
+    trajs = [[] for i in range(nb_trajs)]
+    memory0 = torch.zeros([1,128], device = device, dtype = torch.float)
+    memory = memory0
+    for i in range(nb_trajs):
+        done = False
+        memory = memory0
+        obs = env.reset()
+        while not done:
+            obs         = np.array([obs])
+            obs         = torch.tensor(obs, device=device, dtype=torch.float)
+            dictio = DictList({'image':obs})
+            dist, value, memory = model(dictio, memory)
+
+            #We sample an action from the distribution (stochastic policy)
+            action      = dist.sample()
+
+            #We go one step ahead
+            play        = env.step(action.cpu().numpy())
+            next_obs, true_reward, done = play[0], play[1], play[2]
+            obss.append(obs)
+            obs = next_obs
+            if done:
+                obs         = np.array([obs])
+                obs         = torch.tensor(obs, device=device, dtype=torch.float)
+                obss.append(obs)
+                trajs[i] = obss
+                obss = []
+            
+    return trajs
+
+use_cuda = torch.cuda.is_available()
+device   = torch.device("cuda" if use_cuda else "cpu")
+
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.85
+PERFORMANCE_THRESHOLD = 0.05
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -219,8 +257,12 @@ if __name__ == '__main__':
                 RECORD_OPTIMAL_TRAJ = True
                 OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
                 PERFORMANCE_THRESHOLD = 100
+                #TODO : check this the type you want, it will be a list of trajectories. 
+                #For each trajectory you will have a list of the different observations
+                #Each observation is an n*n*3 tensor, n being being the size of the grid
+                trajs_after_training = make_dem(MAX_SAMPLE, acmodel)
             if RECORD_OPTIMAL_TRAJ and optimal_trajs.shape[0] - OPTIMAL_TRAJ_START_IDX > MAX_SAMPLE:
-                print('agent sucessfully collected {} trajectories'.format(MAX_SAMPLE))
+                print('agent successfully collected {} trajectories'.format(MAX_SAMPLE))
                 break
 
             ######################################################
@@ -268,7 +310,3 @@ if __name__ == '__main__':
     print(stateOccupancyList)
 
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateAverage,method='every')
-
-
-
-
