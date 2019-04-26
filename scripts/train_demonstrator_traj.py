@@ -119,7 +119,7 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.05
+PERFORMANCE_THRESHOLD = 0.80
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -303,7 +303,7 @@ if __name__ == '__main__':
 
     print(stateOccupancyList)
 
-    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateAverage,method='every')
+    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateVAE,method='every')
     print(stateOccupancyList)
 
     import pickle
@@ -315,3 +315,13 @@ if __name__ == '__main__':
 
     f = open('indexToState.pkl', 'wb')
     pickle.dump(indexToState, f)
+
+
+    if torch.cuda.is_available():
+        acmodel.cpu()
+    utils.save_model(acmodel, 'store/drugAddictMode')
+    logger.info("Model successfully saved")
+    if torch.cuda.is_available():
+        acmodel.cuda()
+
+    utils.save_status(status, 'store/drugAddictMode')

@@ -240,7 +240,7 @@ if __name__ == '__main__':
             indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
             stateOccupancyList.append(indexedTraj)
 
-        stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateAverage, method='every')
+        stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
 
         print(stateOccupancyList)
         logs2 = algo.update_parameters(exps,stateOccupancyList)
@@ -316,3 +316,11 @@ if __name__ == '__main__':
     #else:
     #    raise Exception('optimality not reached')
 
+    if torch.cuda.is_available():
+        acmodel.cpu()
+    utils.save_model(acmodel, 'store/agentModel')
+    logger.info("Model successfully saved")
+    if torch.cuda.is_available():
+        acmodel.cuda()
+
+    utils.save_status(status, 'store/agentModel')
