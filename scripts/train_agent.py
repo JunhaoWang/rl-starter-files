@@ -183,7 +183,7 @@ if __name__ == '__main__':
     KLweight=1
     import pickle
 
-    file = open('demonstratorSSrep.pkl', 'rb')
+    file = open('demonstratorSSrep_drugadd.pkl', 'rb')
     demonstratorSSRep = pickle.load(file)
     file = open('stateToIndex.pkl', 'rb')
     stateToIndex = pickle.load(file)
@@ -333,8 +333,8 @@ if __name__ == '__main__':
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
     print(stateOccupancyList)
 
-    testType ="PPOexpertOnlyNoKL"
-    # testType="PPOwKL"
+    #testType ="PPOexpertOnlyNoKL"
+    testType="PPOwKL"
 
     import pickle
 

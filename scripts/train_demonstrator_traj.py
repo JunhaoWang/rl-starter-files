@@ -307,7 +307,7 @@ if __name__ == '__main__':
     print(stateOccupancyList)
 
     import pickle
-    f= open('demonstratorSSrep.pkl', 'wb')
+    f= open('demonstratorSSrep_drugadd.pkl', 'wb')
     pickle.dump(stateOccupancyList, f)
 
     f = open('stateToIndex.pkl', 'wb')
