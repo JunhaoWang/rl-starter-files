@@ -319,9 +319,9 @@ if __name__ == '__main__':
 
     if torch.cuda.is_available():
         acmodel.cpu()
-    utils.save_model(acmodel, 'store/drugAddictMode')
+    utils.save_model(acmodel, 'storage/drugAddictMode')
     logger.info("Model successfully saved")
     if torch.cuda.is_available():
         acmodel.cuda()
 
-    utils.save_status(status, 'store/drugAddictMode')
+    utils.save_status(status, 'storage/drugAddictMode')

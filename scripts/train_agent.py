@@ -318,9 +318,9 @@ if __name__ == '__main__':
 
     if torch.cuda.is_available():
         acmodel.cpu()
-    utils.save_model(acmodel, 'store/agentModel')
+    utils.save_model(acmodel, 'storage/agentModel')
     logger.info("Model successfully saved")
     if torch.cuda.is_available():
         acmodel.cuda()
 
-    utils.save_status(status, 'store/agentModel')
+    utils.save_status(status, 'storage/agentModel')
