@@ -316,11 +316,43 @@ if __name__ == '__main__':
     #else:
     #    raise Exception('optimality not reached')
 
+    optimal_trajs = make_dem(100, acmodel)
+    # optimal_trajs=np.array(optimal_trajs)
+
+    stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
+
+    print(stateToIndex)
+    stateOccupancyList = []
+
+    for i in range(len(optimal_trajs)):
+        indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
+        stateOccupancyList.append(indexedTraj)
+
+    print(stateOccupancyList)
+
+    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
+    print(stateOccupancyList)
+
+    testType ="PPOexpertOnlyNoKL"
+    # testType="PPOwKL"
+
+    import pickle
+
+    f = open('demonstratorSSrep_' + testType + '.pkl', 'wb')
+    pickle.dump(stateOccupancyList, f)
+
+    f = open('stateToIndex.pkl', 'wb')
+    pickle.dump(stateToIndex, f)
+
+    f = open('indexToState.pkl', 'wb')
+    pickle.dump(indexToState, f)
+
     if torch.cuda.is_available():
         acmodel.cpu()
-    utils.save_model(acmodel, 'storage/agentModel')
+    utils.save_model(acmodel, 'storage/agentModel' + testType)
     logger.info("Model successfully saved")
     if torch.cuda.is_available():
         acmodel.cuda()
 
-    utils.save_status(status, 'storage/agentModel')
+    utils.save_status(status, 'storage/agentModel' + testType)
+
