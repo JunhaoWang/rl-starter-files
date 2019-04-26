@@ -83,7 +83,7 @@ args.mem = args.recurrence > 1
 #TODO : put that in utils
 def make_dem(nb_trajs, model):
     obss = []
-    trajs = [[] for i in range(nb_trajs)]
+    trajs = []
     memory0 = torch.zeros([1,128], device = device, dtype = torch.float)
     memory = memory0
     for i in range(nb_trajs):
@@ -102,15 +102,16 @@ def make_dem(nb_trajs, model):
             #We go one step ahead
             play        = env.step(action.cpu().numpy())
             next_obs, true_reward, done = play[0], play[1], play[2]
-            obss.append(obs)
+            obss.append(np.array(obs))
             obs = next_obs
             if done:
                 obs         = np.array([obs])
                 obs         = torch.tensor(obs, device=device, dtype=torch.float)
-                obss.append(obs)
-                trajs[i] = obss
+                obss.append(np.array(obs))
+                obss=np.array(obss)
+                print(obss.shape)
+                trajs.append(obss)
                 obss = []
-            
     return trajs
 
 use_cuda = torch.cuda.is_available()
@@ -214,13 +215,6 @@ if __name__ == '__main__':
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
-        add=exps.obs.image
-        trajTensor = torch.transpose(torch.transpose(add, 1, 3), 2, 3)
-        add = np.array(add)
-        optimal_trajs=list(optimal_trajs)
-        optimal_trajs.append(add)
-        optimal_trajs=np.array(optimal_trajs)
-        print(optimal_trajs.shape)
         logs2 = algo.update_parameters(exps)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
@@ -255,13 +249,13 @@ if __name__ == '__main__':
             if mean_performance_lowerbound > PERFORMANCE_THRESHOLD:
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
-                OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
-                PERFORMANCE_THRESHOLD = 100
-                #TODO : check this the type you want, it will be a list of trajectories. 
+                #OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
+                #PERFORMANCE_THRESHOLD = 100
+                #TODO : check this the type you want, it will be a list of trajectories.
                 #For each trajectory you will have a list of the different observations
                 #Each observation is an n*n*3 tensor, n being being the size of the grid
-                trajs_after_training = make_dem(MAX_SAMPLE, acmodel)
-            if RECORD_OPTIMAL_TRAJ and optimal_trajs.shape[0] - OPTIMAL_TRAJ_START_IDX > MAX_SAMPLE:
+               # trajs_after_training = make_dem(MAX_SAMPLE, acmodel)
+            if RECORD_OPTIMAL_TRAJ:
                 print('agent successfully collected {} trajectories'.format(MAX_SAMPLE))
                 break
 
@@ -285,18 +279,19 @@ if __name__ == '__main__':
 
     #get the state occupancy distribution for the demonstrator trajectories
     print('pickling optimal trajectories')
-    if RECORD_OPTIMAL_TRAJ:
-        import pickle
+    #if RECORD_OPTIMAL_TRAJ:
+    #    import pickle
         #optimal_trajs_out=optimal_trajs[len(optimal_trajs):(optimal_trajs-10)]
-        optimal_trajs_out = optimal_trajs[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]
-        with open('optimal_trajs_{}.pkl'.format(args.env), 'wb') as f:
-            pickle.dump(optimal_trajs_out, f)
-    else:
-        raise Exception('optimality not reached')
+        #optimal_trajs_out = optimal_trajs[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]
+    #    with open('optimal_trajs_{}.pkl'.format(args.env), 'wb') as f:
+    #        pickle.dump(optimal_trajs_out, f)
+    #else:
+    #    raise Exception('optimality not reached')
 
-    optimal_trajs=optimal_trajs_out
-    optimal_trajs=np.array(optimal_trajs)
-    print(optimal_trajs.shape)
+    optimal_trajs=make_dem(5,acmodel)
+    #optimal_trajs=np.array(optimal_trajs)
+    print(len(optimal_trajs))
+    first=optimal_trajs[0]
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
@@ -310,3 +305,4 @@ if __name__ == '__main__':
     print(stateOccupancyList)
 
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateAverage,method='every')
+    print(stateOccupancyList)
