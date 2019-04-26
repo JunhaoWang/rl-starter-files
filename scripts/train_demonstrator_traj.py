@@ -109,7 +109,6 @@ def make_dem(nb_trajs, model):
                 obs         = torch.tensor(obs, device=device, dtype=torch.float)
                 obss.append(np.array(obs))
                 obss=np.array(obss)
-                print(obss.shape)
                 trajs.append(obss)
                 obss = []
     return trajs
@@ -215,7 +214,7 @@ if __name__ == '__main__':
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
-        logs2 = algo.update_parameters(exps)
+        logs2 = algo.update_parameters(exps,0)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
 
@@ -288,7 +287,7 @@ if __name__ == '__main__':
     #else:
     #    raise Exception('optimality not reached')
 
-    optimal_trajs=make_dem(5,acmodel)
+    optimal_trajs=make_dem(100,acmodel)
     #optimal_trajs=np.array(optimal_trajs)
     print(len(optimal_trajs))
     first=optimal_trajs[0]
@@ -306,3 +305,13 @@ if __name__ == '__main__':
 
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateAverage,method='every')
     print(stateOccupancyList)
+
+    import pickle
+    f= open('demonstratorSSrep.pkl', 'wb')
+    pickle.dump(stateOccupancyList, f)
+
+    f = open('stateToIndex.pkl', 'wb')
+    pickle.dump(stateToIndex, f)
+
+    f = open('indexToState.pkl', 'wb')
+    pickle.dump(indexToState, f)

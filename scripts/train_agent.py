@@ -1,20 +1,30 @@
 #!/usr/bin/env python3
 
+#This script is for training the demonstrator trajectories for an environment where your goal is actually the goal of a bad expert.
+#The output is the state occupancy distribution of the expert and a dictionary mapping of states to indexes
+
 import argparse
 import gym
 import time
 import datetime
 import torch
 import torch_ac
+import numpy as np
 import sys
 
 import utils
 from model import ACModel
 from model_flat import ACModelFlat
-from gym_minigrid.wrappers import FullyObsWrapper
+from gym_minigrid.wrappers import FullyObsWrapper #, ReseedWrapper
 import matplotlib.pyplot as plt
 from utils.misc import getSSRep
 from utils.aggregators import aggregateAverage, aggregateVAE
+from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, getStateIndexTraj
+from utils.misc import getSSRepHelperMeta
+from torch_ac.utils import DictList
+
+
+
 # Parse arguments
 
 parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
@@ -69,7 +79,49 @@ parser.add_argument("--flat-model", type=int, default=0, help="use flat neural a
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
+
+#TODO : put that in utils
+def make_dem(nb_trajs, model):
+    obss = []
+    trajs = []
+    memory0 = torch.zeros([1,128], device = device, dtype = torch.float)
+    memory = memory0
+    for i in range(nb_trajs):
+        done = False
+        memory = memory0
+        obs = env.reset()
+        while not done:
+            obs         = np.array([obs])
+            obs         = torch.tensor(obs, device=device, dtype=torch.float)
+            dictio = DictList({'image':obs})
+            dist, value, memory = model(dictio, memory)
+
+            #We sample an action from the distribution (stochastic policy)
+            action      = dist.sample()
+
+            #We go one step ahead
+            play        = env.step(action.cpu().numpy())
+            next_obs, true_reward, done = play[0], play[1], play[2]
+            obss.append(np.array(obs))
+            obs = next_obs
+            if done:
+                obs         = np.array([obs])
+                obs         = torch.tensor(obs, device=device, dtype=torch.float)
+                obss.append(np.array(obs))
+                obss=np.array(obss)
+                trajs.append(obss)
+                obss = []
+    return trajs
+
+use_cuda = torch.cuda.is_available()
+device   = torch.device("cuda" if use_cuda else "cpu")
+
 # Define run dir
+## important constant
+MAX_SAMPLE = 10
+PERFORMANCE_THRESHOLD = 0.05
+RECORD_OPTIMAL_TRAJ = False
+OPTIMAL_TRAJ_START_IDX = -1
 
 suffix = datetime.datetime.now().strftime("%y-%m-%d-%H-%M-%S")
 default_model_name = "{}_{}_seed{}_{}".format(args.env, args.algo, args.seed, suffix)
@@ -96,10 +148,12 @@ utils.seed(args.seed)
 # Generate environments
 if __name__ == '__main__':
     envs = []
+    args.full_obs=1
     for i in range(args.procs):
         env = gym.make(args.env)
         if args.full_obs:
             env = FullyObsWrapper(env)
+            #env=ReseedWrapper(env)
         env.seed(args.seed + 10000*i)
         envs.append(env)
 
@@ -107,32 +161,36 @@ if __name__ == '__main__':
 
     obs_space, preprocess_obss = utils.get_obss_preprocessor(args.env, envs[0].observation_space, model_dir)
 
-    # Load training status
+    # create model params
 
-    try:
-        status = utils.load_status(model_dir)
-    except OSError:
-        status = {"num_frames": 0, "update": 0}
+    status = {"num_frames": 0, "update": 0}
 
-    # Define actor-critic model
+    acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
+    logger.info("Flat model successfully created\n")
 
-    try:
-        acmodel = utils.load_model(model_dir)
-        logger.info("Model successfully loaded\n")
-    except OSError:
-        if args.flat_model:
-            acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
-            logger.info("Flat model successfully created\n")
-        else:
-            acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text)
-            logger.info("Non-flat model successfully created\n")
+
     logger.info("{}\n".format(acmodel))
+
+
+    # Define actor-critic model, for creating demonstrator trajectories
 
     if torch.cuda.is_available():
         acmodel.cuda()
     logger.info("CUDA available: {}\n".format(torch.cuda.is_available()))
 
     # Define actor-critic algo
+    useKL=True
+    KLweight=1
+    import pickle
+
+    file = open('demonstratorSSrep.pkl', 'rb')
+    demonstratorSSRep = pickle.load(file)
+    file = open('stateToIndex.pkl', 'rb')
+    stateToIndex = pickle.load(file)
+    file = open('indexToState.pkl', 'rb')
+    indexToState = pickle.load(file)
+
+
 
     if args.algo == "a2c":
         algo = torch_ac.A2CAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
@@ -141,7 +199,8 @@ if __name__ == '__main__':
     elif args.algo == "ppo":
         algo = torch_ac.PPOAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
                                 args.entropy_coef, args.value_loss_coef, args.max_grad_norm, args.recurrence,
-                                args.optim_eps, args.clip_eps, args.epochs, args.batch_size, preprocess_obss)
+                                args.optim_eps, args.clip_eps, args.epochs, args.batch_size, preprocess_obss,
+                                None,useKL,KLweight,stateToIndex,demonstratorSSRep)
     else:
         raise ValueError("Incorrect algorithm name: {}".format(args.algo))
 
@@ -150,6 +209,8 @@ if __name__ == '__main__':
     num_frames = status["num_frames"]
     total_start_time = time.time()
     update = status["update"]
+
+    optimal_trajs=[]
 
     while num_frames < args.frames:
         # # visualize state representation
@@ -163,7 +224,26 @@ if __name__ == '__main__':
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
-        logs2 = algo.update_parameters(exps)
+
+        ###CALCULATE THE CURRENT STATE TRAJ
+        optimal_trajs = make_dem(100, acmodel)
+        # optimal_trajs=np.array(optimal_trajs)
+        #print(len(optimal_trajs))
+        first = optimal_trajs[0]
+
+        #stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
+
+        #print(stateToIndex)
+        stateOccupancyList = []
+
+        for i in range(len(optimal_trajs)):
+            indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
+            stateOccupancyList.append(indexedTraj)
+
+        stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateAverage, method='every')
+
+        print(stateOccupancyList)
+        logs2 = algo.update_parameters(exps,stateOccupancyList)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
 
@@ -190,6 +270,24 @@ if __name__ == '__main__':
             logger.info(
                 "U {} | F {:06} | FPS {:04.0f} | D {} | rR:mu sigma m M {:.2f} {:.2f} {:.2f} {:.2f} | F:mu sigma m M {:.1f} {:.1f} {} {} | H {:.3f} | V {:.3f} | pL {:.3f} | vL {:.3f} | delta {:.3f}"
                 .format(*data))
+            ######################################################
+
+            # get optimal trajectory after reaching optimality
+            mean_performance_lowerbound = data[4] - data[5]
+            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD:
+                print('agent reach optimality, start collecting trajectories')
+                RECORD_OPTIMAL_TRAJ = True
+                #OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
+                #PERFORMANCE_THRESHOLD = 100
+                #TODO : check this the type you want, it will be a list of trajectories.
+                #For each trajectory you will have a list of the different observations
+                #Each observation is an n*n*3 tensor, n being being the size of the grid
+               # trajs_after_training = make_dem(MAX_SAMPLE, acmodel)
+            if RECORD_OPTIMAL_TRAJ:
+                print('agent successfully collected {} trajectories'.format(MAX_SAMPLE))
+                break
+
+            ######################################################
 
             header += ["return_" + key for key in return_per_episode.keys()]
             data += return_per_episode.values()
@@ -205,17 +303,16 @@ if __name__ == '__main__':
 
             status = {"num_frames": num_frames, "update": update}
 
-        # Save vocabulary, model and status
 
-        if args.save_interval > 0 and update % args.save_interval == 0:
-            if not args.flat_model:
-                preprocess_obss.vocab.save()
 
-            if torch.cuda.is_available():
-                acmodel.cpu()
-            utils.save_model(acmodel, model_dir)
-            logger.info("Model successfully saved")
-            if torch.cuda.is_available():
-                acmodel.cuda()
+    #get the state occupancy distribution for the demonstrator trajectories
+    print('pickling optimal trajectories')
+    #if RECORD_OPTIMAL_TRAJ:
+    #    import pickle
+        #optimal_trajs_out=optimal_trajs[len(optimal_trajs):(optimal_trajs-10)]
+        #optimal_trajs_out = optimal_trajs[OPTIMAL_TRAJ_START_IDX:OPTIMAL_TRAJ_START_IDX + MAX_SAMPLE]
+    #    with open('optimal_trajs_{}.pkl'.format(args.env), 'wb') as f:
+    #        pickle.dump(optimal_trajs_out, f)
+    #else:
+    #    raise Exception('optimality not reached')
 
-            utils.save_status(status, model_dir)
