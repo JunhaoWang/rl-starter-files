@@ -180,7 +180,7 @@ if __name__ == '__main__':
 
     # Define actor-critic algo
     useKL=True
-    KLweight=10
+    KLweight=1
     import pickle
 
     file = open('demonstratorSSrep_drugadd.pkl', 'rb')

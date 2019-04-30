@@ -1,7 +1,7 @@
 import pickle
 import pandas as pd
 
-file = open('demonstratorSSrep_PPOwKL.pkl', 'rb')
+file = open('demonstratorSSrep_PPOwKL1.pkl', 'rb')
 demonstratorSSRep = pickle.load(file)
 file = open('stateToIndex.pkl', 'rb')
 stateToIndex = pickle.load(file)
@@ -16,5 +16,13 @@ print(demonstratorSSRep)
 
 my_df = pd.DataFrame(demonstratorSSRep)
 
-my_df.to_csv("demonstratorSSrep_PPOwKL.csv",index=False)
+my_df.to_csv("demonstratorSSrep_PPOwKL1.csv",index=False)
+
+
+file = open('demonstratorSSrep_PPOexpertOnlyNoKL.pkl', 'rb')
+demonstratorSSRep = pickle.load(file)
+
+my_df = pd.DataFrame(demonstratorSSRep)
+
+my_df.to_csv("demonstratorSSrep_PPOexpertOnlyNoKL.csv",index=False)
 
