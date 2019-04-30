@@ -80,16 +80,16 @@ args = parser.parse_args()
 args.mem = args.recurrence > 1
 
 
-#TODO : put that in utils
 def make_dem(nb_trajs, model):
     obss = []
     trajs = []
     memory0 = torch.zeros([1,128], device = device, dtype = torch.float)
-    memory = memory0
     for i in range(nb_trajs):
         done = False
         memory = memory0
         obs = env.reset()
+        steps=0
+
         while not done:
             obs         = np.array([obs])
             obs         = torch.tensor(obs, device=device, dtype=torch.float)
@@ -109,8 +109,10 @@ def make_dem(nb_trajs, model):
                 obs         = torch.tensor(obs, device=device, dtype=torch.float)
                 obss.append(np.array(obs))
                 obss=np.array(obss)
-                trajs.append(obss)
+                if true_reward > 0:
+                    trajs.append(obss)
                 obss = []
+    print(len(trajs))
     return trajs
 
 use_cuda = torch.cuda.is_available()
@@ -179,7 +181,7 @@ if __name__ == '__main__':
     logger.info("CUDA available: {}\n".format(torch.cuda.is_available()))
 
     # Define actor-critic algo
-    useKL=False
+    useKL=True
     KLweight=1
     import pickle
 

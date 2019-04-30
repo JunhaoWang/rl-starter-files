@@ -89,6 +89,8 @@ def make_dem(nb_trajs, model):
         done = False
         memory = memory0
         obs = env.reset()
+        steps=0
+
         while not done:
             obs         = np.array([obs])
             obs         = torch.tensor(obs, device=device, dtype=torch.float)
@@ -108,8 +110,10 @@ def make_dem(nb_trajs, model):
                 obs         = torch.tensor(obs, device=device, dtype=torch.float)
                 obss.append(np.array(obs))
                 obss=np.array(obss)
-                trajs.append(obss)
+                if true_reward > 0:
+                    trajs.append(obss)
                 obss = []
+    print(len(trajs))
     return trajs
 
 use_cuda = torch.cuda.is_available()
@@ -286,7 +290,7 @@ if __name__ == '__main__':
     #else:
     #    raise Exception('optimality not reached')
 
-    optimal_trajs=make_dem(1000,acmodel)
+    optimal_trajs=make_dem(100,acmodel)
     #optimal_trajs=np.array(optimal_trajs)
     print(len(optimal_trajs))
     first=optimal_trajs[0]
