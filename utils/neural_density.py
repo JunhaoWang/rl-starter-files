@@ -3,14 +3,14 @@ import tensorflow as tf
 
 
 #frame = imresize(screen / self.img_scale, (42, 42), order=1)
-
+#image scale = 255.
 
 class NeuralDensity:
     def __init__(self,sess):
         self.sess=sess
         self.density_model = get_network("density")
 
-    def neural_psc(self,frame, step):
+    def neural_psc(self, frame, step):
         last_frame = process_density_images(frame)
         density_input = process_density_input(last_frame)
 

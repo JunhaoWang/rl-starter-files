@@ -63,7 +63,7 @@ def getStateIndexTraj(obs,stateToIndex,indexToState):
 			for y in range(0,y_values-1):
 				state_code = one_observation[x][y][0]
 				if state_code == 10:
-					dir = one_observation[x][y][1]
+					dir = one_observation[x][y][2]
 					x_agent = x
 					y_agent = y
 					dir_agent = dir
