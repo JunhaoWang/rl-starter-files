@@ -85,7 +85,6 @@ def make_dem(nb_trajs, model):
     obss = []
     trajs = []
     memory0 = torch.zeros([1,128], device = device, dtype = torch.float)
-    memory = memory0
     for i in range(nb_trajs):
         done = False
         memory = memory0

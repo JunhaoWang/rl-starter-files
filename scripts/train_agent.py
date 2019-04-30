@@ -179,7 +179,7 @@ if __name__ == '__main__':
     logger.info("CUDA available: {}\n".format(torch.cuda.is_available()))
 
     # Define actor-critic algo
-    useKL=True
+    useKL=False
     KLweight=1
     import pickle
 
@@ -342,7 +342,7 @@ if __name__ == '__main__':
 
     import pickle
 
-    f = open('demonstratorSSrep_' + testType + '.pkl', 'wb')
+    f = open('agentSSrep_' + testType + '.pkl', 'wb')
     pickle.dump(stateOccupancyList, f)
 
     f = open('stateToIndex.pkl', 'wb')
