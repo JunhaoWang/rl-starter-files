@@ -185,12 +185,12 @@ if __name__ == '__main__':
     KLweight=1
     import pickle
 
-    file = open('demonstratorSSrep_drugadd.pkl', 'rb')
+    file = open('demonstratorSSrep_drugadd_neural.pkl', 'rb')
     demonstratorSSRep = pickle.load(file)
-    file = open('stateToIndex.pkl', 'rb')
-    stateToIndex = pickle.load(file)
-    file = open('indexToState.pkl', 'rb')
-    indexToState = pickle.load(file)
+    #file = open('stateToIndex.pkl', 'rb')
+    #stateToIndex = pickle.load(file)
+    #file = open('indexToState.pkl', 'rb')
+    #indexToState = pickle.load(file)
 
     nd_config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
     nd_config.gpu_options.allow_growth = True
@@ -242,15 +242,15 @@ if __name__ == '__main__':
         #stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
         #print(stateToIndex)
-        stateOccupancyList = []
+        #stateOccupancyList = []
 
-        for i in range(len(optimal_trajs)):
-            indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
-            stateOccupancyList.append(indexedTraj)
+        #for i in range(len(optimal_trajs)):
+        #    indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
+        #    stateOccupancyList.append(indexedTraj)
 
-        stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
+        #stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
 
-        print(stateOccupancyList)
+        #print(stateOccupancyList)
         logs2 = algo.update_parameters(exps,stateOccupancyList)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
@@ -346,7 +346,7 @@ if __name__ == '__main__':
 
     import pickle
 
-    f = open('demonstratorSSrep_' + testType + '.pkl', 'wb')
+    f = open('demonstratorSSrepNeural_' + testType + '.pkl', 'wb')
     pickle.dump(stateOccupancyList, f)
 
     f = open('stateToIndex.pkl', 'wb')

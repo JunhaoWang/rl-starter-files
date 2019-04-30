@@ -119,7 +119,7 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.80
+PERFORMANCE_THRESHOLD = 0.85
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -287,7 +287,7 @@ if __name__ == '__main__':
     #else:
     #    raise Exception('optimality not reached')
 
-    optimal_trajs=make_dem(100,acmodel)
+    optimal_trajs=make_dem(1000,acmodel)
     #optimal_trajs=np.array(optimal_trajs)
     print(len(optimal_trajs))
     first=optimal_trajs[0]

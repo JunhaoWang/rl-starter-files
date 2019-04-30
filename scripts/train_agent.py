@@ -119,7 +119,7 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.80
+PERFORMANCE_THRESHOLD = 0.85
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -180,7 +180,7 @@ if __name__ == '__main__':
 
     # Define actor-critic algo
     useKL=True
-    KLweight=1
+    KLweight=10
     import pickle
 
     file = open('demonstratorSSrep_drugadd.pkl', 'rb')
@@ -224,25 +224,27 @@ if __name__ == '__main__':
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
+        if useKL:
+            ###CALCULATE THE CURRENT STATE TRAJ
+            optimal_trajs = make_dem(100, acmodel)
+            # optimal_trajs=np.array(optimal_trajs)
+            #print(len(optimal_trajs))
+            first = optimal_trajs[0]
 
-        ###CALCULATE THE CURRENT STATE TRAJ
-        optimal_trajs = make_dem(100, acmodel)
-        # optimal_trajs=np.array(optimal_trajs)
-        #print(len(optimal_trajs))
-        first = optimal_trajs[0]
+            #stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
-        #stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
+            #print(stateToIndex)
+            stateOccupancyList = []
 
-        #print(stateToIndex)
-        stateOccupancyList = []
+            for i in range(len(optimal_trajs)):
+                indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
+                stateOccupancyList.append(indexedTraj)
 
-        for i in range(len(optimal_trajs)):
-            indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
-            stateOccupancyList.append(indexedTraj)
+            stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
 
-        stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
-
-        print(stateOccupancyList)
+            print(stateOccupancyList)
+        else:
+            stateOccupancyList = []
         logs2 = algo.update_parameters(exps,stateOccupancyList)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
@@ -316,7 +318,7 @@ if __name__ == '__main__':
     #else:
     #    raise Exception('optimality not reached')
 
-    optimal_trajs = make_dem(100, acmodel)
+    optimal_trajs = make_dem(1000, acmodel)
     # optimal_trajs=np.array(optimal_trajs)
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
@@ -330,11 +332,13 @@ if __name__ == '__main__':
 
     print(stateOccupancyList)
 
-    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
+    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateAverage, method='every')
     print(stateOccupancyList)
 
-    #testType ="PPOexpertOnlyNoKL"
-    testType="PPOwKL"
+    if useKL:
+        testType = "PPOwKL" + KLweight
+    else:
+        testType ="PPOexpertOnlyNoKL"
 
     import pickle
 
