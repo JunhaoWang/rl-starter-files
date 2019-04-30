@@ -336,13 +336,13 @@ if __name__ == '__main__':
     print(stateOccupancyList)
 
     if useKL:
-        testType = "PPOwKL" + KLweight
+        testType = "PPOwKL" + str(KLweight)
     else:
         testType ="PPOexpertOnlyNoKL"
 
     import pickle
 
-    f = open('demonstratorSSrep_' + str(testType) + '.pkl', 'wb')
+    f = open('demonstratorSSrep_' + testType + '.pkl', 'wb')
     pickle.dump(stateOccupancyList, f)
 
     f = open('stateToIndex.pkl', 'wb')
