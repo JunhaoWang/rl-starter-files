@@ -23,6 +23,12 @@ from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, g
 from utils.misc import getSSRepHelperMeta
 from torch_ac.utils import DictList
 
+from utils.neural_density import NeuralDensity
+from skimage.transform import resize
+
+import tensorflow as tf
+
+imresize = resize
 
 
 # Parse arguments
@@ -296,6 +302,11 @@ if __name__ == '__main__':
     ###GET SEQUENCE OF IMAGES FROM THE TRAJECTORIES
     optimal_trajs=make_dem(1000,acmodel)
     #optimal_trajs=np.array(optimal_trajs)
+
+    config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
+    config.gpu_options.allow_growth = True
+    sess = tf.Session(config=config)
+    ndModel = NeuralDensity(sess)
 
 
 

@@ -22,6 +22,7 @@ from utils.aggregators import aggregateAverage, aggregateVAE
 from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, getStateIndexTraj
 from utils.misc import getSSRepHelperMeta
 from torch_ac.utils import DictList
+from utils.neural_density import NeuralDensity
 
 
 
