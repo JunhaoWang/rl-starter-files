@@ -43,6 +43,8 @@ parser.add_argument("--rewardLB", type=float, default=0.8,
                     help="minimum reward required to stop")
 parser.add_argument("--KLweight", type=float, default=0.0001,
                     help="KL weight term")
+parser.add_argument("--useKL", type=int, default=True,
+                    help="do we use a KL term")
 
 parser.add_argument("--model", default=None,
                     help="name of the model (default: {ENV}_{ALGO}_{TIME})")
@@ -196,8 +198,11 @@ if __name__ == '__main__':
     logger.info("CUDA available: {}\n".format(torch.cuda.is_available()))
 
     # Define actor-critic algo
-    useKL=True
+    print(args.useKL)
+    useKL=bool(args.useKL)
+    print(useKL)
     KLweight=float(args.KLweight)
+    print(KLweight)
     import pickle
     file = open('demonstratorSSrep_' + str(args.nameDemonstrator) +'.pkl', 'rb')
     demonstratorSSRep = pickle.load(file)

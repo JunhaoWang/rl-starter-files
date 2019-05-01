@@ -32,6 +32,9 @@ parser.add_argument("--algo", required=True,
                     help="algorithm to use: a2c | ppo (REQUIRED)")
 parser.add_argument("--env", required=True,
                     help="name of the environment to train on (REQUIRED)")
+parser.add_argument("--nameDemonstrator", required=True,
+                    help="name of the demonstrator enviorment for output (REQUIRED)")
+
 parser.add_argument("--model", default=None,
                     help="name of the model (default: {ENV}_{ALGO}_{TIME})")
 parser.add_argument("--seed", type=int, default=1,
@@ -85,11 +88,12 @@ def make_dem(nb_trajs, model):
     obss = []
     trajs = []
     memory0 = torch.zeros([1,128], device = device, dtype = torch.float)
-    memory = memory0
     for i in range(nb_trajs):
         done = False
         memory = memory0
         obs = env.reset()
+        steps=0
+
         while not done:
             obs         = np.array([obs])
             obs         = torch.tensor(obs, device=device, dtype=torch.float)
@@ -109,8 +113,10 @@ def make_dem(nb_trajs, model):
                 obs         = torch.tensor(obs, device=device, dtype=torch.float)
                 obss.append(np.array(obs))
                 obss=np.array(obss)
+                #if true_reward > 0:
                 trajs.append(obss)
                 obss = []
+    print(len(trajs))
     return trajs
 
 use_cuda = torch.cuda.is_available()
@@ -119,7 +125,7 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.85
+PERFORMANCE_THRESHOLD = 0.90
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -214,7 +220,7 @@ if __name__ == '__main__':
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
-        logs2 = algo.update_parameters(exps,0)
+        logs2 = algo.update_parameters(exps,0,0)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
 
@@ -242,10 +248,9 @@ if __name__ == '__main__':
                 "U {} | F {:06} | FPS {:04.0f} | D {} | rR:mu sigma m M {:.2f} {:.2f} {:.2f} {:.2f} | F:mu sigma m M {:.1f} {:.1f} {} {} | H {:.3f} | V {:.3f} | pL {:.3f} | vL {:.3f} | delta {:.3f}"
                 .format(*data))
             ######################################################
-
             # get optimal trajectory after reaching optimality
             mean_performance_lowerbound = data[4] - data[5]
-            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD:
+            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > 0.90:
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
                 #OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
@@ -287,49 +292,18 @@ if __name__ == '__main__':
     #else:
     #    raise Exception('optimality not reached')
 
-    nd_config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
-    nd_config.gpu_options.allow_growth = True
-    nd_sess = tf.Session(config=nd_config)
 
-    neural_density = NeuralDensity(nd_sess)
-
-
-    optimal_trajs=make_dem(100,acmodel)
+    ###GET SEQUENCE OF IMAGES FROM THE TRAJECTORIES
+    optimal_trajs=make_dem(1000,acmodel)
     #optimal_trajs=np.array(optimal_trajs)
 
-    #print(len(optimal_trajs))
-    #first=optimal_trajs[0]
-
-    #stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
-
-    #print(stateToIndex)
-    #stateOccupancyList = []
-
-    #for i in range(len(optimal_trajs)):
-    #    indexedTraj = getStateIndexTraj(optimal_trajs[i],stateToIndex, indexToState)
-    #    stateOccupancyList.append(indexedTraj)
-
-    #print(stateOccupancyList)
-
-    #stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateVAE,method='every')
-    #print(stateOccupancyList)
-
-    import pickle
-    f= open('demonstratorSSrep_drugadd_neural.pkl', 'wb')
-    pickle.dump(stateOccupancyList, f)
-
-    #f = open('stateToIndex.pkl', 'wb')
-    #pickle.dump(stateToIndex, f)
-
-    #f = open('indexToState.pkl', 'wb')
-    #pickle.dump(indexToState, f)
 
 
     if torch.cuda.is_available():
         acmodel.cpu()
-    utils.save_model(acmodel, 'storage/drugAddictMode')
+    utils.save_model(acmodel, 'storage/NeuraldrugAddictMode' + str(args.nameDemonstrator))
     logger.info("Model successfully saved")
     if torch.cuda.is_available():
         acmodel.cuda()
 
-    utils.save_status(status, 'storage/drugAddictMode')
+    utils.save_status(status, 'storage/NeuraldrugAddictMode' + str(args.nameDemonstrator))
