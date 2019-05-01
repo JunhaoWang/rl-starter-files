@@ -71,7 +71,7 @@ class ACModelFlat(nn.Module, torch_ac.RecurrentACModel):
             self.actor = nn.Sequential(
                 nn.Linear(self.embedding_size, 64),
                 nn.Tanh(),
-                nn.Linear(64, action_space.n)
+                nn.Linear(64, 3)
             )
         else:
             raise ValueError("Unknown action space: " + str(action_space))
