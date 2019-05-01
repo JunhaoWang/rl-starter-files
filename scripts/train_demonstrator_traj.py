@@ -32,6 +32,9 @@ parser.add_argument("--algo", required=True,
                     help="algorithm to use: a2c | ppo (REQUIRED)")
 parser.add_argument("--env", required=True,
                     help="name of the environment to train on (REQUIRED)")
+parser.add_argument("--nameDemonstrator", required=True,
+                    help="name of the demonstrator enviorment for output (REQUIRED)")
+
 parser.add_argument("--model", default=None,
                     help="name of the model (default: {ENV}_{ALGO}_{TIME})")
 parser.add_argument("--seed", type=int, default=1,
@@ -217,7 +220,7 @@ if __name__ == '__main__':
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
-        logs2 = algo.update_parameters(exps,0)
+        logs2 = algo.update_parameters(exps,0,0)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
 
@@ -289,7 +292,7 @@ if __name__ == '__main__':
     #else:
     #    raise Exception('optimality not reached')
 
-    optimal_trajs=make_dem(100,acmodel)
+    optimal_trajs=make_dem(1000,acmodel)
     #optimal_trajs=np.array(optimal_trajs)
     print(len(optimal_trajs))
     first=optimal_trajs[0]
@@ -309,7 +312,8 @@ if __name__ == '__main__':
     print(stateOccupancyList)
 
     import pickle
-    f= open('demonstratorSSrep_drugadd.pkl', 'wb')
+
+    f= open('demonstratorSSrep_' + str(args.nameDemonstrator) +'.pkl', 'wb')
     pickle.dump(stateOccupancyList, f)
 
     f = open('stateToIndex.pkl', 'wb')
@@ -321,9 +325,9 @@ if __name__ == '__main__':
 
     if torch.cuda.is_available():
         acmodel.cpu()
-    utils.save_model(acmodel, 'storage/drugAddictMode')
+    utils.save_model(acmodel, 'storage/drugAddictMode' + str(args.nameDemonstrator))
     logger.info("Model successfully saved")
     if torch.cuda.is_available():
         acmodel.cuda()
 
-    utils.save_status(status, 'storage/drugAddictMode')
+    utils.save_status(status, 'storage/drugAddictMode' + str(args.nameDemonstrator))

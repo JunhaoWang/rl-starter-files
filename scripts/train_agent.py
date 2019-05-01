@@ -34,6 +34,16 @@ parser.add_argument("--algo", required=True,
                     help="algorithm to use: a2c | ppo (REQUIRED)")
 parser.add_argument("--env", required=True,
                     help="name of the environment to train on (REQUIRED)")
+parser.add_argument("--nameDemonstrator", required=True,
+                    help="name of the demonstrator enviorment for output (REQUIRED)")
+
+parser.add_argument("--meanReward", type=float, default=0.85,
+                    help="mean reward required to stop")
+parser.add_argument("--rewardLB", type=float, default=0.8,
+                    help="minimum reward required to stop")
+parser.add_argument("--KLweight", type=float, default=0.0001,
+                    help="KL weight term")
+
 parser.add_argument("--model", default=None,
                     help="name of the model (default: {ENV}_{ALGO}_{TIME})")
 parser.add_argument("--seed", type=int, default=1,
@@ -81,15 +91,6 @@ parser.add_argument("--flat-model", type=int, default=0, help="use flat neural a
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
-def KL(P,Q):
-    epsilon = 0.00001
-
-    # You may want to instead make copies to avoid changing the np arrays.
-    P = P+epsilon
-    Q = Q+epsilon
-
-    divergence = np.sum(P*np.log(P/Q))
-    return divergence
 
 def make_dem(nb_trajs, model):
     obss = []
@@ -132,7 +133,8 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.90
+PERFORMANCE_THRESHOLD = float(args.meanReward)
+LB_PERFORMANCE_THRESHOLD= float(args.rewardLB)
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -195,10 +197,9 @@ if __name__ == '__main__':
 
     # Define actor-critic algo
     useKL=True
-    KLweight=0.00001
+    KLweight=float(args.KLweight)
     import pickle
-
-    file = open('demonstratorSSrep_drugadd.pkl', 'rb')
+    file = open('demonstratorSSrep_' + str(args.nameDemonstrator) +'.pkl', 'rb')
     demonstratorSSRep = pickle.load(file)
     file = open('stateToIndex.pkl', 'rb')
     stateToIndex = pickle.load(file)
@@ -226,6 +227,7 @@ if __name__ == '__main__':
     update = status["update"]
 
     optimal_trajs=[]
+    decay = 0
 
     while num_frames < args.frames:
         # # visualize state representation
@@ -241,7 +243,7 @@ if __name__ == '__main__':
         exps, logs1 = algo.collect_experiences()
         if useKL:
             ###CALCULATE THE CURRENT STATE TRAJ
-            optimal_trajs = make_dem(100, acmodel)
+            optimal_trajs = make_dem(300, acmodel)
             # optimal_trajs=np.array(optimal_trajs)
             #print(len(optimal_trajs))
             first = optimal_trajs[0]
@@ -260,7 +262,8 @@ if __name__ == '__main__':
             #print(stateOccupancyList)
         else:
             stateOccupancyList = []
-        logs2 = algo.update_parameters(exps,stateOccupancyList)
+        decay += 1
+        logs2 = algo.update_parameters(exps,stateOccupancyList,decay)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
 
@@ -291,7 +294,7 @@ if __name__ == '__main__':
 
             # get optimal trajectory after reaching optimality
             mean_performance_lowerbound = data[4] - data[5]
-            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > 0.90:
+            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > LB_PERFORMANCE_THRESHOLD:
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
                 #OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
@@ -351,7 +354,7 @@ if __name__ == '__main__':
     print(stateOccupancyList)
 
     if useKL:
-        testType = "PPOwKL" + str(KLweight)
+        testType = "PPOwKL" + str(KLweight) + "meanReward" + str(PERFORMANCE_THRESHOLD) + "lowerBound" + str(LB_PERFORMANCE_THRESHOLD)
     else:
         testType ="PPOexpertOnlyNoKL"
 
