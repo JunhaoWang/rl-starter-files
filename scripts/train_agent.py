@@ -132,7 +132,7 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.85
+PERFORMANCE_THRESHOLD = 0.90
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -195,7 +195,7 @@ if __name__ == '__main__':
 
     # Define actor-critic algo
     useKL=True
-    KLweight=1
+    KLweight=0.00001
     import pickle
 
     file = open('demonstratorSSrep_drugadd.pkl', 'rb')
@@ -291,7 +291,7 @@ if __name__ == '__main__':
 
             # get optimal trajectory after reaching optimality
             mean_performance_lowerbound = data[4] - data[5]
-            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > 0.85:
+            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > 0.90:
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
                 #OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
