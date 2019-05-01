@@ -110,8 +110,8 @@ def make_dem(nb_trajs, model):
                 obs         = torch.tensor(obs, device=device, dtype=torch.float)
                 obss.append(np.array(obs))
                 obss=np.array(obss)
-                if true_reward > 0:
-                    trajs.append(obss)
+                #if true_reward > 0:
+                trajs.append(obss)
                 obss = []
     print(len(trajs))
     return trajs
@@ -245,10 +245,9 @@ if __name__ == '__main__':
                 "U {} | F {:06} | FPS {:04.0f} | D {} | rR:mu sigma m M {:.2f} {:.2f} {:.2f} {:.2f} | F:mu sigma m M {:.1f} {:.1f} {} {} | H {:.3f} | V {:.3f} | pL {:.3f} | vL {:.3f} | delta {:.3f}"
                 .format(*data))
             ######################################################
-
             # get optimal trajectory after reaching optimality
             mean_performance_lowerbound = data[4] - data[5]
-            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD:
+            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > 0.85:
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
                 #OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]

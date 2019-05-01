@@ -23,6 +23,8 @@ from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, g
 from utils.misc import getSSRepHelperMeta
 from torch_ac.utils import DictList
 
+from sklearn.metrics import mutual_info_score
+
 
 
 # Parse arguments
@@ -79,6 +81,15 @@ parser.add_argument("--flat-model", type=int, default=0, help="use flat neural a
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
+def KL(P,Q):
+    epsilon = 0.00001
+
+    # You may want to instead make copies to avoid changing the np arrays.
+    P = P+epsilon
+    Q = Q+epsilon
+
+    divergence = np.sum(P*np.log(P/Q))
+    return divergence
 
 def make_dem(nb_trajs, model):
     obss = []
@@ -109,8 +120,8 @@ def make_dem(nb_trajs, model):
                 obs         = torch.tensor(obs, device=device, dtype=torch.float)
                 obss.append(np.array(obs))
                 obss=np.array(obss)
-                if true_reward > 0:
-                    trajs.append(obss)
+                #if true_reward > 0:
+                trajs.append(obss)
                 obss = []
     print(len(trajs))
     return trajs
@@ -146,6 +157,8 @@ logger.info("{}\n".format(args))
 # Set seed for all randomness sources
 
 utils.seed(args.seed)
+
+
 
 # Generate environments
 if __name__ == '__main__':
@@ -244,7 +257,7 @@ if __name__ == '__main__':
 
             stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
 
-            print(stateOccupancyList)
+            #print(stateOccupancyList)
         else:
             stateOccupancyList = []
         logs2 = algo.update_parameters(exps,stateOccupancyList)
@@ -278,7 +291,7 @@ if __name__ == '__main__':
 
             # get optimal trajectory after reaching optimality
             mean_performance_lowerbound = data[4] - data[5]
-            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD:
+            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > 0.85:
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
                 #OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
