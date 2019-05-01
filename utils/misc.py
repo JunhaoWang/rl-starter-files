@@ -102,7 +102,8 @@ def getSSRepHelperMeta(matrixTraj, numState, aggregator, method='vanilla'):
     elif method == 'every':
         collect_SSRep = list(map(lambda x: getSSRepHelperEveryVisit(x, numState), matrixTraj))
         collect_SSRep = np.array(collect_SSRep)
-        return aggregator(collect_SSRep)
+        aggs = aggregator(collect_SSRep)
+        return (np.array(aggs) / np.sum(aggs)).tolist()
     elif method == 'vanilla':
         collect_SSRep = getSSRepHelperVanilla(matrixTraj, numState)
         return np.array(collect_SSRep)
