@@ -184,7 +184,12 @@ if __name__ == '__main__':
 
     status = {"num_frames": 0, "update": 0}
 
-    acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
+
+    if(bool(args.flat_model)):
+        acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
+    else:
+        acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text)
+
     logger.info("Flat model successfully created\n")
 
 
