@@ -1,4 +1,4 @@
-from .GatedPixelCNN.func import process_density_images, process_density_input, get_network
+from GatedPixelCNN.func import process_density_images, process_density_input, get_network
 import tensorflow as tf
 
 
