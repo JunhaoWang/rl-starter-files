@@ -32,12 +32,12 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
 
         # Define image embedding
         self.image_conv = nn.Sequential(
-            nn.Conv2d(3, 16, (2, 2)),
+            nn.Conv2d(3, 32, (2, 2)),
             nn.ReLU(),
             nn.MaxPool2d((2, 2)),
-            nn.Conv2d(16, 32, (2, 2)),
-            nn.ReLU(),
             nn.Conv2d(32, 64, (2, 2)),
+            nn.ReLU(),
+            nn.Conv2d(64, 64, (2, 2)),
             nn.ReLU()
         )
         n = obs_space["image"][0]
@@ -65,7 +65,7 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
             self.actor = nn.Sequential(
                 nn.Linear(self.embedding_size, 64),
                 nn.Tanh(),
-                nn.Linear(64, action_space.n)
+                nn.Linear(64, 3)
             )
         else:
             raise ValueError("Unknown action space: " + str(action_space))

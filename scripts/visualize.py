@@ -4,7 +4,7 @@ import argparse
 import gym
 import gym_minigrid
 import time
-
+from gym_minigrid.wrappers import FullyObsWrapper
 import utils
 
 # Parse arguments
@@ -31,6 +31,7 @@ utils.seed(args.seed)
 # Generate environment
 
 env = gym.make(args.env)
+env = FullyObsWrapper(env)
 env.seed(args.seed)
 for _ in range(args.shift):
     env.reset()

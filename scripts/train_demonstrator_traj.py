@@ -126,7 +126,8 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.90
+PERFORMANCE_THRESHOLD = 0.83
+LB_PERFORMANCE_THRESHOLD = 0.73
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -175,6 +176,7 @@ if __name__ == '__main__':
     if(bool(args.flat_model)):
         acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
     else:
+        print('ok')
         acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text)
 
     logger.info("Flat model successfully created\n")
@@ -255,7 +257,7 @@ if __name__ == '__main__':
             ######################################################
             # get optimal trajectory after reaching optimality
             mean_performance_lowerbound = data[4] - data[5]
-            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > 0.90:
+            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > LB_PERFORMANCE_THRESHOLD:                
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
                 #OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
