@@ -22,6 +22,7 @@ from utils.aggregators import aggregateAverage, aggregateVAE
 from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, getStateIndexTraj
 from utils.misc import getSSRepHelperMeta
 from torch_ac.utils import DictList
+import datetime
 
 from sklearn.metrics import mutual_info_score
 
@@ -364,7 +365,7 @@ if __name__ == '__main__':
     print(stateOccupancyList)
 
     if useKL:
-        testType = "PPOwKL" + str(KLweight) + "meanReward" + str(PERFORMANCE_THRESHOLD) + "lowerBound" + str(LB_PERFORMANCE_THRESHOLD)
+        testType = "PPOwKL" + str(KLweight) + "meanReward" + str(PERFORMANCE_THRESHOLD) + "lowerBound" + str(LB_PERFORMANCE_THRESHOLD) +str(datetime.datetime.now().strftime("%y-%m-%d-%H-%M-%S"))
     else:
         testType ="PPOexpertOnlyNoKL"
 
