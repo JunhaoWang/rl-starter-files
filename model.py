@@ -62,6 +62,7 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
 
         # Resize image embedding
         self.embedding_size = self.semi_memory_size
+        #self.embedding_size = 256
         if self.use_text:
             self.embedding_size += self.text_embedding_size
 

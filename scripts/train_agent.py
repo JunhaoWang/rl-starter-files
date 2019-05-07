@@ -23,6 +23,8 @@ from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, g
 from utils.misc import getSSRepHelperMeta
 from torch_ac.utils import DictList
 import datetime
+import pickle
+
 
 from sklearn.metrics import mutual_info_score
 
@@ -204,12 +206,11 @@ if __name__ == '__main__':
     logger.info("CUDA available: {}\n".format(torch.cuda.is_available()))
 
     # Define actor-critic algo
-    print(args.useKL)
+    
     useKL=bool(args.useKL)
-    print(useKL)
+    print("Do we use KL %s ?" %useKL)
     KLweight=float(args.KLweight)
-    print(KLweight)
-    import pickle
+    print("KL weight %s" %KLweight)
     file = open('demonstratorSSrep_' + str(args.nameDemonstrator) +'.pkl', 'rb')
     demonstratorSSRep = pickle.load(file)
     file = open('stateToIndex.pkl', 'rb')
@@ -352,17 +353,17 @@ if __name__ == '__main__':
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
-    print(stateToIndex)
+    #print(stateToIndex)
     stateOccupancyList = []
 
     for i in range(len(optimal_trajs)):
         indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
         stateOccupancyList.append(indexedTraj)
 
-    print(stateOccupancyList)
+    #print(stateOccupancyList)
 
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateAverage, method='every')
-    print(stateOccupancyList)
+    #print(stateOccupancyList)
 
     if useKL:
         testType = "PPOwKL" + str(KLweight) + "meanReward" + str(PERFORMANCE_THRESHOLD) + "lowerBound" + str(LB_PERFORMANCE_THRESHOLD) +str(datetime.datetime.now().strftime("%y-%m-%d-%H-%M-%S"))
