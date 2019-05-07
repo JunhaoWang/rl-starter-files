@@ -80,6 +80,8 @@ parser.add_argument("--text", action="store_true", default=False,
                     help="add a GRU to the model to handle text input")
 parser.add_argument("--full-obs", type=int, default=0, help="full-obs")
 parser.add_argument("--flat-model", type=int, default=0, help="use flat neural architecture instead of CNN")
+parser.add_argument("--arch", type=int, default=0,
+                    help="architecture type, default 0, indicates the number of linear layers between the CNN and actor-critic")
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
@@ -126,8 +128,8 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.83
-LB_PERFORMANCE_THRESHOLD = 0.73
+PERFORMANCE_THRESHOLD = 0.8
+LB_PERFORMANCE_THRESHOLD = 0.7
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -177,7 +179,7 @@ if __name__ == '__main__':
         acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
     else:
         print('ok')
-        acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text)
+        acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text, args.arch)
 
     logger.info("Flat model successfully created\n")
 

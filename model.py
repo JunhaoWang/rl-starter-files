@@ -17,9 +17,14 @@ def initialize_parameters(m):
             m.bias.data.fill_(0)
 
 class ACModel(nn.Module, torch_ac.RecurrentACModel):
-    def __init__(self, obs_space, action_space, use_memory=False, use_text=False):
+    def __init__(self, obs_space, action_space, use_memory=False, use_text=False, arch = 0):
         super().__init__()
 
+
+
+        self.arch1 = (arch ==1)
+        self.arch2 = (arch ==2)
+        self.arch3 = (arch ==3)
         # Collect set of trajectory sequence information (state_sequence, state_space_cardinality, grid_shape,
         # state_value_value) encoded by discrete state. Note it should only be used for discrete state when FullyObsWrapper
         # is used.
@@ -60,6 +65,29 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
         if self.use_text:
             self.embedding_size += self.text_embedding_size
 
+        if self.arch1:
+            self.linear1   = nn.Sequential(
+                                nn.Linear(self.embedding_size, self.embedding_size//2),
+                                nn.Tanh())
+            self.embedding_size = self.embedding_size//2
+
+        elif self.arch2:
+            self.linear1   = nn.Sequential(
+                                nn.Linear(self.embedding_size, self.embedding_size//2),
+                                nn.Tanh(),
+                                nn.Linear(self.embedding_size//2, self.embedding_size//4),
+                                nn.Tanh())
+            self.embedding_size = self.embedding_size//4
+        elif self.arch3:
+            self.linear1   = nn.Sequential(
+                                nn.Linear(self.embedding_size, self.embedding_size//2),
+                                nn.Tanh(),
+                                nn.Linear(self.embedding_size//2, self.embedding_size//4),
+                                nn.Tanh(),
+                                nn.Linear(self.embedding_size//4, 64),
+                                nn.Tanh())
+            self.embedding_size = 64
+
         # Define actor's model
         if isinstance(action_space, gym.spaces.Discrete):
             self.actor = nn.Sequential(
@@ -99,6 +127,9 @@ class ACModel(nn.Module, torch_ac.RecurrentACModel):
         x = torch.transpose(torch.transpose(obs.image, 1, 3), 2, 3)
         x = self.image_conv(x)
         x = x.reshape(x.shape[0], -1)
+
+        if self.arch1 or self.arch2 or self.arch3:
+            x = self.linear1(x)
 
         if self.use_memory:
             hidden = (memory[:, :self.semi_memory_size], memory[:, self.semi_memory_size:])
