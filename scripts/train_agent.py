@@ -207,9 +207,9 @@ if __name__ == '__main__':
     # Define actor-critic algo
     
     useKL=bool(args.useKL)
-    print("Do we use KL %s ?" %useKL)
+    print("Do we use KL ? %s " %useKL)
     KLweight=float(args.KLweight)
-    print("KL weight %s" %KLweight)
+    print("KL weight : %s" %KLweight)
     file = open('demonstratorSSrep_' + str(args.nameDemonstrator) +'.pkl', 'rb')
     demonstratorSSRep = pickle.load(file)
     file = open('stateToIndex.pkl', 'rb')
