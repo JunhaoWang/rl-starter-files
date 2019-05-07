@@ -109,12 +109,12 @@ def make_dem(nb_trajs, model):
             #We go one step ahead
             play        = env.step(action.cpu().numpy())
             next_obs, true_reward, done = play[0], play[1], play[2]
-            obss.append(np.array(obs))
+            obss.append(np.array(obs.cpu()))
             obs = next_obs
             if done:
                 obs         = np.array([obs])
                 obs         = torch.tensor(obs, device=device, dtype=torch.float)
-                obss.append(np.array(obs))
+                obss.append(np.array(obs.cpu()))
                 obss=np.array(obss)
                 #if true_reward > 0:
                 trajs.append(obss)
@@ -258,7 +258,7 @@ if __name__ == '__main__':
                 .format(*data))
             ######################################################
             # get optimal trajectory after reaching optimality
-            mean_performance_lowerbound = data[4] - data[5]
+            mean_performance_lowerbound = data[4]
             if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > LB_PERFORMANCE_THRESHOLD:                
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
