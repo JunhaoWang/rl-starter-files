@@ -119,7 +119,6 @@ def make_dem(nb_trajs, model):
                 #if true_reward > 0:
                 trajs.append(obss)
                 obss = []
-    print(len(trajs))
     return trajs
 
 use_cuda = torch.cuda.is_available()
@@ -303,22 +302,22 @@ if __name__ == '__main__':
 
     optimal_trajs=make_dem(1000,acmodel)
     #optimal_trajs=np.array(optimal_trajs)
-    print(len(optimal_trajs))
+    print("number of episodes sampled %s" %len(optimal_trajs))
     first=optimal_trajs[0]
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
-    print(stateToIndex)
+    #print(stateToIndex)
     stateOccupancyList = []
 
     for i in range(len(optimal_trajs)):
         indexedTraj = getStateIndexTraj(optimal_trajs[i],stateToIndex, indexToState)
         stateOccupancyList.append(indexedTraj)
 
-    print(stateOccupancyList)
+    #print(stateOccupancyList)
 
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateVAE,method='every')
-    print(stateOccupancyList)
+    #print(stateOccupancyList)
 
     import pickle
 

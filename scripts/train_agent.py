@@ -129,7 +129,6 @@ def make_dem(nb_trajs, model):
                 #if true_reward > 0:
                 trajs.append(obss)
                 obss = []
-    print(len(trajs))
     return trajs
 
 use_cuda = torch.cuda.is_available()
