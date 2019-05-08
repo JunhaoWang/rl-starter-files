@@ -80,6 +80,8 @@ parser.add_argument("--text", action="store_true", default=False,
                     help="add a GRU to the model to handle text input")
 parser.add_argument("--full-obs", type=int, default=0, help="full-obs")
 parser.add_argument("--flat-model", type=int, default=0, help="use flat neural architecture instead of CNN")
+parser.add_argument("--arch", type=int, default=0,
+                    help="architecture type, default 0, indicates the number of linear layers between the CNN and actor-critic")
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
@@ -117,7 +119,6 @@ def make_dem(nb_trajs, model):
                 #if true_reward > 0:
                 trajs.append(obss)
                 obss = []
-    print(len(trajs))
     return trajs
 
 use_cuda = torch.cuda.is_available()
@@ -126,8 +127,8 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.83
-LB_PERFORMANCE_THRESHOLD = 0.73
+PERFORMANCE_THRESHOLD = 0.8
+LB_PERFORMANCE_THRESHOLD = 0.7
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -177,7 +178,7 @@ if __name__ == '__main__':
         acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
     else:
         print('ok')
-        acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text)
+        acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text, args.arch)
 
     logger.info("Flat model successfully created\n")
 
@@ -301,22 +302,22 @@ if __name__ == '__main__':
 
     optimal_trajs=make_dem(1000,acmodel)
     #optimal_trajs=np.array(optimal_trajs)
-    print(len(optimal_trajs))
+    print("number of episodes sampled %s" %len(optimal_trajs))
     first=optimal_trajs[0]
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
-    print(stateToIndex)
+    #print(stateToIndex)
     stateOccupancyList = []
 
     for i in range(len(optimal_trajs)):
         indexedTraj = getStateIndexTraj(optimal_trajs[i],stateToIndex, indexToState)
         stateOccupancyList.append(indexedTraj)
 
-    print(stateOccupancyList)
+    #print(stateOccupancyList)
 
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateVAE,method='every')
-    print(stateOccupancyList)
+    #print(stateOccupancyList)
 
     import pickle
 
