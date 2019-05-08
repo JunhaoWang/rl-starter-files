@@ -215,7 +215,7 @@ if __name__ == '__main__':
     demonstratorSSRep=list()
 
     for name in dem_names:
-        file = open('demonstratorSSrep_' + str(dem_names) +'.pkl', 'rb')
+        file = open('demonstratorSSrep_' + str(name) +'.pkl', 'rb')
         demonstratorSSRep.append(pickle.load(file))
 
     file = open('stateToIndex.pkl', 'rb')
