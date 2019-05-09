@@ -132,8 +132,8 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = meanReward
-LB_PERFORMANCE_THRESHOLD = rewardLB
+PERFORMANCE_THRESHOLD = args.meanReward
+LB_PERFORMANCE_THRESHOLD = args.rewardLB
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
