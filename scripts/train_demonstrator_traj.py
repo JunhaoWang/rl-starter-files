@@ -82,6 +82,11 @@ parser.add_argument("--full-obs", type=int, default=0, help="full-obs")
 parser.add_argument("--flat-model", type=int, default=0, help="use flat neural architecture instead of CNN")
 parser.add_argument("--arch", type=int, default=0,
                     help="architecture type, default 0, indicates the number of linear layers between the CNN and actor-critic")
+
+parser.add_argument("--meanReward", type=float, default=0.85,
+                    help="mean reward required to stop")
+parser.add_argument("--rewardLB", type=float, default=0.8,
+                    help="minimum reward required to stop")
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
@@ -127,8 +132,8 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.8
-LB_PERFORMANCE_THRESHOLD = 0.7
+PERFORMANCE_THRESHOLD = meanReward
+LB_PERFORMANCE_THRESHOLD = rewardLB
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
