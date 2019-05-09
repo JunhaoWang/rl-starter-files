@@ -35,7 +35,7 @@ parser.add_argument("--algo", required=True,
                     help="algorithm to use: a2c | ppo (REQUIRED)")
 parser.add_argument("--env", required=True,
                     help="name of the environment to train on (REQUIRED)")
-parser.add_argument('-nameDemonstrators', '--nameDemonstrators', help='delimited list input of dem names pickle files', type=str)
+parser.add_argument('-nameDemonstrator', '--nameDemonstrator', help='delimited list input of dem names pickle files', type=str)
 
 parser.add_argument("--meanReward", type=float, default=0.85,
                     help="mean reward required to stop")
