@@ -231,7 +231,7 @@ def vaeGenerator(dataset, original_dim_inputs, intermediate_dim, latent_dim, bat
         z_sample=z_sample.reshape((1,latent_dim))
         x_decoded = generator.predict(z_sample)
         output_gen[i,] = x_decoded
-        
+
     K.clear_session()
     vae = None
     del vae

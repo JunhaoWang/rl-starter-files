@@ -27,8 +27,7 @@ import pickle
 
 #from pympler import asizeof
 import os
-import psutil
-process = psutil.Process(os.getpid())
+
 
 
 
