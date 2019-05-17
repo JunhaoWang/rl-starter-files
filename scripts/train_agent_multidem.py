@@ -126,7 +126,6 @@ def make_dem(nb_trajs, model):
                 #if true_reward > 0:
                 trajs.append(obss)
                 obss = []
-    print(len(trajs))
     return trajs
 
 use_cuda = torch.cuda.is_available()
@@ -360,17 +359,13 @@ if __name__ == '__main__':
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
-    print(stateToIndex)
     stateOccupancyList = []
 
     for i in range(len(optimal_trajs)):
         indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
         stateOccupancyList.append(indexedTraj)
 
-    print(stateOccupancyList)
-
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateAverage, method='every')
-    print(stateOccupancyList)
 
     if useKL:
         testType = "PPOwKL" + str(KLweight) + "meanReward" + str(PERFORMANCE_THRESHOLD) + "lowerBound" + str(LB_PERFORMANCE_THRESHOLD) +str(datetime.datetime.now().strftime("%y-%m-%d-%H-%M-%S"))
