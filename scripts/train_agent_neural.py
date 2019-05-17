@@ -21,10 +21,9 @@ from utils.misc import getSSRep
 from utils.aggregators import aggregateAverage, aggregateVAE
 from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, getStateIndexTraj
 from utils.misc import getSSRepHelperMeta
-from utils.neural_density import NeuralDensity
-
 from torch_ac.utils import DictList
-import tensorflow as tf
+from gatedpixelcnn_bonus import PixelBonus
+from skimage.transform import resize
 
 
 # Parse arguments
@@ -34,6 +33,9 @@ parser.add_argument("--algo", required=True,
                     help="algorithm to use: a2c | ppo (REQUIRED)")
 parser.add_argument("--env", required=True,
                     help="name of the environment to train on (REQUIRED)")
+parser.add_argument("--nameDemonstrator", required=True,
+                    help="name of the demonstrator enviorment for output (REQUIRED)")
+
 parser.add_argument("--model", default=None,
                     help="name of the model (default: {ENV}_{ALGO}_{TIME})")
 parser.add_argument("--seed", type=int, default=1,
@@ -78,6 +80,15 @@ parser.add_argument("--text", action="store_true", default=False,
                     help="add a GRU to the model to handle text input")
 parser.add_argument("--full-obs", type=int, default=0, help="full-obs")
 parser.add_argument("--flat-model", type=int, default=0, help="use flat neural architecture instead of CNN")
+parser.add_argument("--arch", type=int, default=0,
+                    help="architecture type, default 0, indicates the number of linear layers between the CNN and actor-critic")
+
+parser.add_argument("--meanReward", type=float, default=0.85,
+                    help="mean reward required to stop")
+parser.add_argument("--rewardLB", type=float, default=0.8,
+                    help="minimum reward required to stop")
+parser.add_argument("--useNeural", type=int, default=0,
+                    help="do we use the nerual density")
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
@@ -87,11 +98,12 @@ def make_dem(nb_trajs, model):
     obss = []
     trajs = []
     memory0 = torch.zeros([1,128], device = device, dtype = torch.float)
-    memory = memory0
     for i in range(nb_trajs):
         done = False
         memory = memory0
         obs = env.reset()
+        steps=0
+
         while not done:
             obs         = np.array([obs])
             obs         = torch.tensor(obs, device=device, dtype=torch.float)
@@ -104,13 +116,14 @@ def make_dem(nb_trajs, model):
             #We go one step ahead
             play        = env.step(action.cpu().numpy())
             next_obs, true_reward, done = play[0], play[1], play[2]
-            obss.append(np.array(obs))
+            obss.append(np.array(obs.cpu()))
             obs = next_obs
             if done:
                 obs         = np.array([obs])
                 obs         = torch.tensor(obs, device=device, dtype=torch.float)
-                obss.append(np.array(obs))
+                obss.append(np.array(obs.cpu()))
                 obss=np.array(obss)
+                #if true_reward > 0:
                 trajs.append(obss)
                 obss = []
     return trajs
@@ -121,7 +134,8 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = 0.85
+PERFORMANCE_THRESHOLD = args.meanReward
+LB_PERFORMANCE_THRESHOLD = args.rewardLB
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -167,7 +181,12 @@ if __name__ == '__main__':
 
     status = {"num_frames": 0, "update": 0}
 
-    acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
+    if(bool(args.flat_model)):
+        acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
+    else:
+        print('ok')
+        acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text, args.arch)
+
     logger.info("Flat model successfully created\n")
 
 
@@ -181,23 +200,7 @@ if __name__ == '__main__':
     logger.info("CUDA available: {}\n".format(torch.cuda.is_available()))
 
     # Define actor-critic algo
-    useKL=True
-    KLweight=1
-    import pickle
-
-    file = open('demonstratorSSrep_drugadd_neural.pkl', 'rb')
-    demonstratorSSRep = pickle.load(file)
-    #file = open('stateToIndex.pkl', 'rb')
-    #stateToIndex = pickle.load(file)
-    #file = open('indexToState.pkl', 'rb')
-    #indexToState = pickle.load(file)
-
-    nd_config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
-    nd_config.gpu_options.allow_growth = True
-    nd_sess = tf.Session(config=nd_config)
-
-    neural_density = NeuralDensity(nd_sess)
-
+    useKL=False
 
 
     if args.algo == "a2c":
@@ -208,7 +211,7 @@ if __name__ == '__main__':
         algo = torch_ac.PPOAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
                                 args.entropy_coef, args.value_loss_coef, args.max_grad_norm, args.recurrence,
                                 args.optim_eps, args.clip_eps, args.epochs, args.batch_size, preprocess_obss,
-                                None,useKL,KLweight,stateToIndex,demonstratorSSRep)
+                                None,useKL)
     else:
         raise ValueError("Incorrect algorithm name: {}".format(args.algo))
 
@@ -219,6 +222,16 @@ if __name__ == '__main__':
     update = status["update"]
 
     optimal_trajs=[]
+
+    useNeural = bool(args.useNeural)
+
+    if useNeural:
+        # FLAGS = update_tf_wrapper_args(args,)
+        tf_config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
+        tf_config.gpu_options.allow_growth = True
+        sess = tf.Session(config=tf_config)
+        pixel_bonus = PixelBonus(FLAGS, sess)
+        tf.initialize_all_variables().run(session=sess)
 
     while num_frames < args.frames:
         # # visualize state representation
@@ -232,26 +245,7 @@ if __name__ == '__main__':
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
-
-        ###CALCULATE THE CURRENT STATE TRAJ
-        optimal_trajs = make_dem(100, acmodel)
-        # optimal_trajs=np.array(optimal_trajs)
-        #print(len(optimal_trajs))
-        first = optimal_trajs[0]
-
-        #stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
-
-        #print(stateToIndex)
-        #stateOccupancyList = []
-
-        #for i in range(len(optimal_trajs)):
-        #    indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
-        #    stateOccupancyList.append(indexedTraj)
-
-        #stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
-
-        #print(stateOccupancyList)
-        logs2 = algo.update_parameters(exps,stateOccupancyList)
+        logs2 = algo.update_parameters(exps,0,0,0)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
 
@@ -279,10 +273,9 @@ if __name__ == '__main__':
                 "U {} | F {:06} | FPS {:04.0f} | D {} | rR:mu sigma m M {:.2f} {:.2f} {:.2f} {:.2f} | F:mu sigma m M {:.1f} {:.1f} {} {} | H {:.3f} | V {:.3f} | pL {:.3f} | vL {:.3f} | delta {:.3f}"
                 .format(*data))
             ######################################################
-
             # get optimal trajectory after reaching optimality
-            mean_performance_lowerbound = data[4] - data[5]
-            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD:
+            mean_performance_lowerbound = data[4]
+            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > LB_PERFORMANCE_THRESHOLD:
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
                 #OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
@@ -323,43 +316,3 @@ if __name__ == '__main__':
     #        pickle.dump(optimal_trajs_out, f)
     #else:
     #    raise Exception('optimality not reached')
-
-    optimal_trajs = make_dem(100, acmodel)
-    # optimal_trajs=np.array(optimal_trajs)
-
-    stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
-
-    print(stateToIndex)
-    stateOccupancyList = []
-
-    for i in range(len(optimal_trajs)):
-        indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
-        stateOccupancyList.append(indexedTraj)
-
-    print(stateOccupancyList)
-
-    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
-    print(stateOccupancyList)
-
-    #testType ="PPOexpertOnlyNoKL"
-    testType="PPOwKL"
-
-    import pickle
-
-    f = open('demonstratorSSrepNeural_' + testType + '.pkl', 'wb')
-    pickle.dump(stateOccupancyList, f)
-
-    f = open('stateToIndex.pkl', 'wb')
-    pickle.dump(stateToIndex, f)
-
-    f = open('indexToState.pkl', 'wb')
-    pickle.dump(indexToState, f)
-
-    if torch.cuda.is_available():
-        acmodel.cpu()
-    utils.save_model(acmodel, 'storage/agentModel' + testType)
-    logger.info("Model successfully saved")
-    if torch.cuda.is_available():
-        acmodel.cuda()
-
-    utils.save_status(status, 'storage/agentModel' + testType)
