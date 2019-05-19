@@ -25,10 +25,9 @@ from torch_ac.utils import DictList
 import datetime
 import pickle
 
-from pympler import asizeof
+#from pympler import asizeof
 import os
-import psutil
-process = psutil.Process(os.getpid())
+
 
 
 
@@ -260,13 +259,13 @@ if __name__ == '__main__':
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
         if useKL:
-            print('=' * 20, 'debug memory')
-            print('264: ', process.memory_info().rss)
+            #print('=' * 20, 'debug memory')
+            #print('264: ', process.memory_info().rss)
             ###CALCULATE THE CURRENT STATE TRAJ
             optimal_trajs = make_dem(100, acmodel)
 
-            print('268: ', process.memory_info().rss)
-            print('optimal_trajs: ', asizeof.asizeof(optimal_trajs))
+            #print('268: ', process.memory_info().rss)
+            #print('optimal_trajs: ', asizeof.asizeof(optimal_trajs))
 
             # optimal_trajs=np.array(optimal_trajs)
             #print(len(optimal_trajs))
@@ -281,15 +280,15 @@ if __name__ == '__main__':
                 indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
                 stateOccupancyList.append(indexedTraj)
 
-            print('282: ', process.memory_info().rss)
-            print('indexedTraj: ', asizeof.asizeof(indexedTraj))
-            print('stateOccupancyList: ', asizeof.asizeof(stateOccupancyList))
+            #print('282: ', process.memory_info().rss)
+            #print('indexedTraj: ', asizeof.asizeof(indexedTraj))
+            #print('stateOccupancyList: ', asizeof.asizeof(stateOccupancyList))
 
             stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
 
-            print('288: ', process.memory_info().rss)
-            print('stateOccupancyList: ', asizeof.asizeof(stateOccupancyList))
-            print('=' * 20, 'debug memory')
+            #print('288: ', process.memory_info().rss)
+            #print('stateOccupancyList: ', asizeof.asizeof(stateOccupancyList))
+            #print('=' * 20, 'debug memory')
 
             #print(stateOccupancyList)
         else:

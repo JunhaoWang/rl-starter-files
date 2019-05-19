@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import gc
 import logging
 logging.getLogger('tensorflow').disabled = True
 import os
@@ -19,6 +20,7 @@ from scipy.stats import norm
 
 import random
 import numpy as np
+
 
 
 # reparameterization trick
@@ -230,4 +232,8 @@ def vaeGenerator(dataset, original_dim_inputs, intermediate_dim, latent_dim, bat
         x_decoded = generator.predict(z_sample)
         output_gen[i,] = x_decoded
 
+    K.clear_session()
+    vae = None
+    del vae
+    gc.collect()
     return output_gen
