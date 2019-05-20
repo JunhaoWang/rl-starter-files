@@ -1,0 +1,323 @@
+The following modules were not unloaded:
+  (Use "module --force purge" to unload all):
+
+  1) StdEnv/2018.3     4) gcccore/.7.3.0      7) intel/2018.3
+  2) nixpkgs/16.09     5) icc/.2018.3.222     8) openmpi/3.1.2
+  3) imkl/2018.3.222   6) ifort/.2018.3.222
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/3.1.2
+
+Attention: While Conda works well in a desktop environment, it tends to create more problems than it solves on a cluster. Instead, we recommend that users use virtual environments and the binary packages that we provide through Python wheels as documented on the Python page.
+/home/rdali/RL/watch_and_learn/dependency/rl-starter-files/scripts/train_agent_multidem.py --env MiniGrid-LavaCrossingAddictO12S15-v0 --algo ppo --nameDemonstrator LavaCrossing1215Addict1,LavaCrossing1215Addict2,LavaCrossing1215Addict4,LavaCrossing1215Addict5,LavaCrossing1215Addict7,LavaCrossing1215Addict8,LavaCrossing1215Addict9,LavaCrossing1215Addict10 --flat-model 0 --KLweight 0.1 --useKL 1 --meanReward 0.80 --rewardLB 0.70 --seed 2400
+
+Namespace(KLweight=0.1, algo='ppo', batch_size=256, clip_eps=0.2, discount=0.99, entropy_coef=0.01, env='MiniGrid-LavaCrossingAddictO12S15-v0', epochs=4, flat_model=0, frames=10000000, frames_per_proc=None, full_obs=0, gae_lambda=0.95, log_interval=1, lr=0.0007, max_grad_norm=0.5, meanReward=0.8, mem=False, model=None, nameDemonstrator='LavaCrossing1215Addict1,LavaCrossing1215Addict2,LavaCrossing1215Addict4,LavaCrossing1215Addict5,LavaCrossing1215Addict7,LavaCrossing1215Addict8,LavaCrossing1215Addict9,LavaCrossing1215Addict10', optim_alpha=0.99, optim_eps=1e-05, procs=16, recurrence=1, rewardLB=0.7, save_interval=0, seed=2400, tb=False, text=False, useKL=1, value_loss_coef=0.5)
+
+Flat model successfully created
+
+ACModel(
+  (image_conv): Sequential(
+    (0): Conv2d(3, 32, kernel_size=(2, 2), stride=(1, 1))
+    (1): ReLU()
+    (2): MaxPool2d(kernel_size=(2, 2), stride=(2, 2), padding=0, dilation=1, ceil_mode=False)
+    (3): Conv2d(32, 64, kernel_size=(2, 2), stride=(1, 1))
+    (4): ReLU()
+    (5): Conv2d(64, 64, kernel_size=(2, 2), stride=(1, 1))
+    (6): ReLU()
+  )
+  (actor): Sequential(
+    (0): Linear(in_features=1600, out_features=64, bias=True)
+    (1): Tanh()
+    (2): Linear(in_features=64, out_features=3, bias=True)
+  )
+  (critic): Sequential(
+    (0): Linear(in_features=1600, out_features=64, bias=True)
+    (1): Tanh()
+    (2): Linear(in_features=64, out_features=1, bias=True)
+  )
+)
+
+CUDA available: False
+
+1
+True
+0.1
+Using TensorFlow backend.
+OMP: Info #212: KMP_AFFINITY: decoding x2APIC ids.
+OMP: Info #210: KMP_AFFINITY: Affinity capable, using global cpuid leaf 11 info
+OMP: Info #154: KMP_AFFINITY: Initial OS proc set respected: 0-4
+OMP: Info #156: KMP_AFFINITY: 5 available OS procs
+OMP: Info #158: KMP_AFFINITY: Nonuniform topology
+OMP: Info #179: KMP_AFFINITY: 2 packages x 3 cores/pkg x 1 threads/core (5 total cores)
+OMP: Info #214: KMP_AFFINITY: OS proc to physical thread map:
+OMP: Info #171: KMP_AFFINITY: OS proc 0 maps to package 0 core 0 
+OMP: Info #171: KMP_AFFINITY: OS proc 4 maps to package 0 core 1 
+OMP: Info #171: KMP_AFFINITY: OS proc 2 maps to package 0 core 4 
+OMP: Info #171: KMP_AFFINITY: OS proc 1 maps to package 1 core 0 
+OMP: Info #171: KMP_AFFINITY: OS proc 3 maps to package 1 core 4 
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247044 thread 0 bound to OS proc set 0
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247254 thread 3 bound to OS proc set 3
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247253 thread 2 bound to OS proc set 4
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247252 thread 1 bound to OS proc set 1
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247255 thread 4 bound to OS proc set 2
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247562 thread 5 bound to OS proc set 0
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247561 thread 6 bound to OS proc set 1
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247586 thread 7 bound to OS proc set 4
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247588 thread 9 bound to OS proc set 2
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247589 thread 10 bound to OS proc set 0
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247587 thread 8 bound to OS proc set 3
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247677 thread 11 bound to OS proc set 1
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247678 thread 12 bound to OS proc set 4
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247679 thread 13 bound to OS proc set 3
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247680 thread 14 bound to OS proc set 2
+OMP: Info #250: KMP_AFFINITY: pid 247044 tid 247681 thread 15 bound to OS proc set 0
+U 1 | F 002048 | FPS 0023 | D 87 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 51.8 43.3 0.0 123.0 | H 1.090 | V 0.157 | pL 0.043 | vL 0.001 | delta 0.055
+U 2 | F 004096 | FPS 0023 | D 175 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 86.3 45.4 0.0 175.0 | H 1.082 | V 0.123 | pL 0.025 | vL 0.000 | delta 0.019
+U 3 | F 006144 | FPS 0024 | D 262 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 163.2 93.3 38.0 383.0 | H 1.098 | V 0.098 | pL 0.023 | vL 0.000 | delta 0.016
+U 4 | F 008192 | FPS 0026 | D 340 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 231.2 138.8 28.0 446.0 | H 1.091 | V 0.076 | pL 0.022 | vL 0.000 | delta 0.011
+U 5 | F 010240 | FPS 0024 | D 424 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 178.3 157.1 28.0 600.0 | H 1.098 | V 0.058 | pL 0.017 | vL 0.000 | delta 0.008
+U 6 | F 012288 | FPS 0029 | D 495 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 170.9 108.5 30.0 462.0 | H 1.098 | V 0.048 | pL 0.015 | vL 0.000 | delta 0.007
+U 7 | F 014336 | FPS 0026 | D 573 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 182.9 98.1 30.0 462.0 | H 1.098 | V 0.043 | pL 0.011 | vL 0.000 | delta 0.004
+U 8 | F 016384 | FPS 0028 | D 647 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 206.5 191.0 45.0 900.0 | H 1.098 | V 0.037 | pL 0.009 | vL 0.000 | delta 0.002
+U 9 | F 018432 | FPS 0030 | D 717 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 219.9 110.9 45.0 416.0 | H 1.098 | V 0.027 | pL 0.008 | vL 0.000 | delta 0.003
+U 10 | F 020480 | FPS 0026 | D 795 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 143.8 106.5 41.0 416.0 | H 1.098 | V 0.023 | pL 0.007 | vL 0.000 | delta 0.002
+U 11 | F 022528 | FPS 0027 | D 870 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 175.5 162.5 41.0 735.0 | H 1.099 | V 0.017 | pL 0.005 | vL 0.000 | delta 0.002
+U 12 | F 024576 | FPS 0029 | D 940 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 204.3 190.1 34.0 735.0 | H 1.098 | V 0.013 | pL 0.003 | vL 0.000 | delta 0.001
+U 13 | F 026624 | FPS 0029 | D 1011 | rR:mu sigma m M 0.02 0.08 0.00 0.34 | F:mu sigma m M 230.6 178.3 35.0 662.0 | H 1.098 | V 0.012 | pL 0.000 | vL 0.000 | delta 0.005
+U 14 | F 028672 | FPS 0028 | D 1084 | rR:mu sigma m M 0.02 0.08 0.00 0.34 | F:mu sigma m M 202.1 163.4 35.0 662.0 | H 1.099 | V 0.010 | pL 0.003 | vL 0.000 | delta 0.002
+U 15 | F 030720 | FPS 0031 | D 1150 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 197.2 111.0 75.0 470.0 | H 1.099 | V 0.008 | pL 0.002 | vL 0.000 | delta 0.001
+U 16 | F 032768 | FPS 0029 | D 1221 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 269.5 225.6 71.0 900.0 | H 1.099 | V 0.006 | pL 0.002 | vL 0.000 | delta 0.001
+U 17 | F 034816 | FPS 0030 | D 1290 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 187.5 114.0 74.0 443.0 | H 1.099 | V 0.005 | pL 0.002 | vL 0.000 | delta 0.000
+U 18 | F 036864 | FPS 0027 | D 1366 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 156.3 104.9 28.0 443.0 | H 1.099 | V 0.004 | pL 0.001 | vL 0.000 | delta 0.000
+U 19 | F 038912 | FPS 0029 | D 1437 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 149.5 74.1 28.0 301.0 | H 1.099 | V 0.004 | pL 0.001 | vL 0.000 | delta 0.000
+U 20 | F 040960 | FPS 0027 | D 1512 | rR:mu sigma m M 0.01 0.04 0.00 0.15 | F:mu sigma m M 193.2 194.2 47.0 849.0 | H 1.098 | V 0.003 | pL 0.000 | vL 0.000 | delta 0.001
+U 21 | F 043008 | FPS 0026 | D 1589 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 154.6 125.4 22.0 495.0 | H 1.099 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.000
+U 22 | F 045056 | FPS 0028 | D 1662 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 104.7 101.7 33.0 393.0 | H 1.099 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.000
+U 23 | F 047104 | FPS 0029 | D 1733 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 129.5 99.1 19.0 336.0 | H 1.099 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.000
+U 24 | F 049152 | FPS 0028 | D 1806 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 174.6 97.2 69.0 336.0 | H 1.099 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.000
+U 25 | F 051200 | FPS 0031 | D 1873 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 186.6 138.1 51.0 506.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 26 | F 053248 | FPS 0026 | D 1951 | rR:mu sigma m M 0.04 0.20 0.00 0.92 | F:mu sigma m M 157.6 124.7 10.0 447.0 | H 1.093 | V 0.009 | pL -0.008 | vL 0.003 | delta 0.018
+U 27 | F 055296 | FPS 0036 | D 2009 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 127.9 74.6 26.0 302.0 | H 1.099 | V 0.001 | pL -0.000 | vL 0.000 | delta 0.006
+U 28 | F 057344 | FPS 0028 | D 2083 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 118.0 58.5 37.0 293.0 | H 1.099 | V -0.003 | pL -0.001 | vL 0.000 | delta 0.001
+U 29 | F 059392 | FPS 0030 | D 2152 | rR:mu sigma m M 0.04 0.17 0.00 0.69 | F:mu sigma m M 206.8 146.8 27.0 479.0 | H 1.098 | V 0.003 | pL -0.006 | vL 0.001 | delta 0.023
+U 30 | F 061440 | FPS 0026 | D 2232 | rR:mu sigma m M 0.04 0.17 0.00 0.69 | F:mu sigma m M 195.8 155.7 14.0 479.0 | H 1.099 | V 0.002 | pL -0.000 | vL 0.000 | delta 0.003
+U 31 | F 063488 | FPS 0025 | D 2315 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 180.9 141.7 14.0 454.0 | H 1.099 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.002
+U 32 | F 065536 | FPS 0027 | D 2392 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 148.6 163.5 31.0 654.0 | H 1.098 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.003
+U 33 | F 067584 | FPS 0028 | D 2465 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 168.5 167.1 31.0 654.0 | H 1.099 | V 0.000 | pL -0.000 | vL 0.000 | delta 0.001
+U 34 | F 069632 | FPS 0026 | D 2545 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 282.7 193.6 58.0 679.0 | H 1.099 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.001
+U 35 | F 071680 | FPS 0028 | D 2619 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 262.6 189.6 58.0 679.0 | H 1.099 | V 0.000 | pL -0.000 | vL 0.000 | delta 0.001
+U 36 | F 073728 | FPS 0030 | D 2688 | rR:mu sigma m M 0.03 0.13 0.00 0.54 | F:mu sigma m M 233.8 200.8 21.0 831.0 | H 1.096 | V 0.005 | pL -0.005 | vL 0.001 | delta 0.026
+U 37 | F 075776 | FPS 0031 | D 2754 | rR:mu sigma m M 0.03 0.13 0.00 0.54 | F:mu sigma m M 154.5 142.5 13.0 456.0 | H 1.098 | V 0.007 | pL 0.002 | vL 0.000 | delta 0.003
+U 38 | F 077824 | FPS 0031 | D 2820 | rR:mu sigma m M 0.08 0.20 0.00 0.68 | F:mu sigma m M 196.8 144.8 13.0 454.0 | H 1.095 | V 0.017 | pL -0.006 | vL 0.001 | delta 0.016
+U 39 | F 079872 | FPS 0032 | D 2883 | rR:mu sigma m M 0.04 0.15 0.00 0.62 | F:mu sigma m M 186.9 172.6 42.0 693.0 | H 1.098 | V 0.019 | pL -0.001 | vL 0.001 | delta 0.018
+U 40 | F 081920 | FPS 0030 | D 2952 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 135.0 102.3 40.0 407.0 | H 1.098 | V 0.011 | pL 0.002 | vL 0.000 | delta 0.006
+U 41 | F 083968 | FPS 0028 | D 3025 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 166.6 126.3 25.0 482.0 | H 1.098 | V 0.003 | pL 0.001 | vL 0.000 | delta 0.002
+U 42 | F 086016 | FPS 0030 | D 3093 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 134.7 168.5 21.0 721.0 | H 1.098 | V 0.003 | pL 0.001 | vL 0.000 | delta 0.001
+U 43 | F 088064 | FPS 0027 | D 3169 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 154.6 171.8 28.0 721.0 | H 1.099 | V 0.003 | pL 0.000 | vL 0.000 | delta 0.001
+U 44 | F 090112 | FPS 0029 | D 3240 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 180.3 105.3 35.0 387.0 | H 1.099 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.000
+U 45 | F 092160 | FPS 0027 | D 3314 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 200.1 98.3 59.0 411.0 | H 1.099 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.000
+U 46 | F 094208 | FPS 0028 | D 3388 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 231.4 207.9 23.0 900.0 | H 1.099 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.000
+U 47 | F 096256 | FPS 0027 | D 3463 | rR:mu sigma m M 0.05 0.19 0.00 0.78 | F:mu sigma m M 261.9 237.1 23.0 900.0 | H 1.098 | V 0.006 | pL -0.006 | vL 0.001 | delta 0.012
+U 48 | F 098304 | FPS 0032 | D 3528 | rR:mu sigma m M 0.05 0.19 0.00 0.78 | F:mu sigma m M 209.7 161.2 35.0 724.0 | H 1.098 | V 0.006 | pL 0.002 | vL 0.000 | delta 0.003
+U 49 | F 100352 | FPS 0026 | D 3605 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 229.4 172.1 47.0 693.0 | H 1.098 | V 0.008 | pL 0.001 | vL 0.000 | delta 0.003
+U 50 | F 102400 | FPS 0028 | D 3677 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 234.6 217.1 31.0 818.0 | H 1.098 | V 0.008 | pL 0.001 | vL 0.000 | delta 0.001
+U 51 | F 104448 | FPS 0025 | D 3760 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 227.0 221.2 31.0 818.0 | H 1.098 | V 0.011 | pL 0.002 | vL 0.000 | delta 0.001
+U 52 | F 106496 | FPS 0032 | D 3825 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 195.1 103.8 32.0 374.0 | H 1.098 | V 0.007 | pL 0.002 | vL 0.000 | delta 0.001
+U 53 | F 108544 | FPS 0032 | D 3889 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 178.4 154.5 23.0 489.0 | H 1.099 | V 0.005 | pL 0.002 | vL 0.000 | delta 0.000
+U 54 | F 110592 | FPS 0034 | D 3949 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 152.3 110.6 23.0 435.0 | H 1.099 | V 0.004 | pL 0.001 | vL 0.000 | delta 0.000
+U 55 | F 112640 | FPS 0031 | D 4015 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 150.9 140.6 45.0 592.0 | H 1.099 | V 0.003 | pL 0.001 | vL 0.000 | delta 0.000
+U 56 | F 114688 | FPS 0031 | D 4081 | rR:mu sigma m M 0.05 0.18 0.00 0.76 | F:mu sigma m M 159.2 143.5 47.0 592.0 | H 1.096 | V 0.008 | pL -0.005 | vL 0.001 | delta 0.011
+U 57 | F 116736 | FPS 0028 | D 4156 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 143.3 103.8 19.0 338.0 | H 1.098 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.002
+U 58 | F 118784 | FPS 0029 | D 4226 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 186.5 122.3 19.0 433.0 | H 1.098 | V 0.006 | pL -0.001 | vL 0.000 | delta 0.007
+U 59 | F 120832 | FPS 0027 | D 4303 | rR:mu sigma m M 0.02 0.09 0.00 0.36 | F:mu sigma m M 252.8 208.5 36.0 774.0 | H 1.097 | V 0.004 | pL -0.003 | vL 0.000 | delta 0.006
+U 60 | F 122880 | FPS 0031 | D 4368 | rR:mu sigma m M 0.02 0.09 0.00 0.36 | F:mu sigma m M 241.8 222.5 41.0 774.0 | H 1.098 | V -0.000 | pL -0.000 | vL 0.000 | delta 0.003
+U 61 | F 124928 | FPS 0030 | D 4435 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 130.8 107.5 35.0 488.0 | H 1.099 | V -0.001 | pL -0.001 | vL 0.000 | delta 0.001
+U 62 | F 126976 | FPS 0029 | D 4507 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 102.2 70.1 22.0 273.0 | H 1.099 | V -0.001 | pL -0.000 | vL 0.000 | delta 0.000
+U 63 | F 129024 | FPS 0032 | D 4571 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 140.0 108.9 22.0 441.0 | H 1.099 | V 0.001 | pL -0.000 | vL 0.000 | delta 0.003
+U 64 | F 131072 | FPS 0029 | D 4641 | rR:mu sigma m M 0.03 0.12 0.00 0.53 | F:mu sigma m M 149.3 134.2 16.0 471.0 | H 1.098 | V 0.001 | pL -0.002 | vL 0.000 | delta 0.017
+U 65 | F 133120 | FPS 0030 | D 4709 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 124.6 107.4 9.0 377.0 | H 1.099 | V -0.003 | pL -0.001 | vL 0.000 | delta 0.002
+U 66 | F 135168 | FPS 0028 | D 4781 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 154.3 126.7 12.0 428.0 | H 1.099 | V -0.003 | pL -0.002 | vL 0.000 | delta 0.002
+U 67 | F 137216 | FPS 0032 | D 4844 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 136.6 113.7 35.0 402.0 | H 1.098 | V -0.002 | pL -0.000 | vL 0.000 | delta 0.002
+U 68 | F 139264 | FPS 0029 | D 4916 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 147.1 86.5 41.0 356.0 | H 1.099 | V -0.002 | pL -0.001 | vL 0.000 | delta 0.001
+U 69 | F 141312 | FPS 0026 | D 4996 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 140.9 90.6 39.0 378.0 | H 1.099 | V 0.000 | pL -0.000 | vL 0.000 | delta 0.002
+U 70 | F 143360 | FPS 0031 | D 5061 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 133.8 92.1 34.0 378.0 | H 1.099 | V 0.000 | pL -0.000 | vL 0.000 | delta 0.000
+U 71 | F 145408 | FPS 0027 | D 5137 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 216.6 162.8 18.0 619.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.001
+U 72 | F 147456 | FPS 0028 | D 5209 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 241.6 264.4 18.0 804.0 | H 1.099 | V -0.000 | pL -0.000 | vL 0.000 | delta 0.000
+U 73 | F 149504 | FPS 0028 | D 5282 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 279.6 288.0 32.0 900.0 | H 1.098 | V 0.000 | pL -0.000 | vL 0.000 | delta 0.000
+U 74 | F 151552 | FPS 0029 | D 5352 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 247.6 262.3 29.0 900.0 | H 1.099 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.001
+U 75 | F 153600 | FPS 0029 | D 5424 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 153.0 136.7 26.0 476.0 | H 1.098 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.001
+U 76 | F 155648 | FPS 0031 | D 5490 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 173.1 110.9 27.0 459.0 | H 1.099 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.001
+U 77 | F 157696 | FPS 0028 | D 5562 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 139.9 93.1 27.0 412.0 | H 1.099 | V 0.001 | pL -0.000 | vL 0.000 | delta 0.000
+U 78 | F 159744 | FPS 0032 | D 5627 | rR:mu sigma m M 0.05 0.19 0.00 0.79 | F:mu sigma m M 249.6 221.7 12.0 757.0 | H 1.097 | V 0.007 | pL -0.006 | vL 0.001 | delta 0.010
+U 79 | F 161792 | FPS 0033 | D 5689 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 160.2 130.0 28.0 458.0 | H 1.098 | V 0.003 | pL 0.001 | vL 0.000 | delta 0.001
+U 80 | F 163840 | FPS 0027 | D 5765 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 162.2 120.6 30.0 458.0 | H 1.098 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.001
+U 81 | F 165888 | FPS 0029 | D 5836 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 174.2 96.1 66.0 372.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 82 | F 167936 | FPS 0028 | D 5909 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 212.0 131.5 66.0 501.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 83 | F 169984 | FPS 0028 | D 5983 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 161.2 98.3 38.0 353.0 | H 1.098 | V 0.004 | pL 0.001 | vL 0.000 | delta 0.006
+U 84 | F 172032 | FPS 0027 | D 6058 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 157.8 127.8 20.0 431.0 | H 1.096 | V 0.003 | pL 0.000 | vL 0.000 | delta 0.003
+U 85 | F 174080 | FPS 0027 | D 6134 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 135.1 105.7 15.0 428.0 | H 1.098 | V 0.004 | pL -0.001 | vL 0.000 | delta 0.003
+U 86 | F 176128 | FPS 0030 | D 6203 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 204.0 219.9 10.0 900.0 | H 1.098 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.002
+U 87 | F 178176 | FPS 0029 | D 6272 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 177.1 198.6 10.0 900.0 | H 1.098 | V 0.004 | pL 0.000 | vL 0.000 | delta 0.001
+U 88 | F 180224 | FPS 0029 | D 6342 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 197.9 155.1 33.0 543.0 | H 1.099 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.001
+U 89 | F 182272 | FPS 0030 | D 6411 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 179.1 137.3 19.0 496.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 90 | F 184320 | FPS 0027 | D 6487 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 180.4 146.1 26.0 496.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 91 | F 186368 | FPS 0028 | D 6560 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 149.6 137.8 26.0 564.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 92 | F 188416 | FPS 0032 | D 6623 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 193.6 149.8 29.0 564.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 93 | F 190464 | FPS 0032 | D 6686 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 166.8 106.4 27.0 379.0 | H 1.099 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.000
+U 94 | F 192512 | FPS 0030 | D 6755 | rR:mu sigma m M 0.03 0.10 0.00 0.43 | F:mu sigma m M 153.7 125.5 24.0 572.0 | H 1.096 | V 0.004 | pL -0.003 | vL 0.000 | delta 0.016
+U 95 | F 194560 | FPS 0028 | D 6829 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 139.4 106.4 19.0 413.0 | H 1.099 | V 0.004 | pL 0.001 | vL 0.000 | delta 0.003
+U 96 | F 196608 | FPS 0026 | D 6907 | rR:mu sigma m M 0.05 0.19 0.00 0.80 | F:mu sigma m M 156.2 107.7 19.0 413.0 | H 1.095 | V 0.007 | pL -0.005 | vL 0.001 | delta 0.033
+U 97 | F 198656 | FPS 0031 | D 6972 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 167.4 113.9 50.0 488.0 | H 1.097 | V 0.005 | pL 0.000 | vL 0.000 | delta 0.008
+U 98 | F 200704 | FPS 0031 | D 7037 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 118.5 98.9 17.0 385.0 | H 1.098 | V 0.004 | pL 0.002 | vL 0.000 | delta 0.002
+U 99 | F 202752 | FPS 0028 | D 7109 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 180.1 190.4 17.0 832.0 | H 1.099 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.001
+U 100 | F 204800 | FPS 0026 | D 7188 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 181.6 178.0 15.0 694.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 101 | F 206848 | FPS 0030 | D 7257 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 163.4 158.3 15.0 694.0 | H 1.098 | V 0.003 | pL -0.001 | vL 0.000 | delta 0.001
+U 102 | F 208896 | FPS 0030 | D 7325 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 155.2 172.1 30.0 719.0 | H 1.098 | V 0.007 | pL 0.003 | vL 0.000 | delta 0.003
+U 103 | F 210944 | FPS 0029 | D 7395 | rR:mu sigma m M 0.09 0.25 0.00 0.88 | F:mu sigma m M 209.1 180.7 30.0 719.0 | H 1.094 | V 0.013 | pL -0.011 | vL 0.002 | delta 0.025
+U 104 | F 212992 | FPS 0033 | D 7457 | rR:mu sigma m M 0.04 0.14 0.00 0.56 | F:mu sigma m M 215.8 146.1 37.0 499.0 | H 1.096 | V 0.008 | pL 0.000 | vL 0.000 | delta 0.004
+U 105 | F 215040 | FPS 0031 | D 7522 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 221.3 136.9 68.0 499.0 | H 1.098 | V 0.006 | pL 0.002 | vL 0.000 | delta 0.002
+U 106 | F 217088 | FPS 0026 | D 7602 | rR:mu sigma m M 0.03 0.13 0.00 0.52 | F:mu sigma m M 229.6 169.5 38.0 632.0 | H 1.097 | V 0.010 | pL -0.003 | vL 0.000 | delta 0.008
+U 107 | F 219136 | FPS 0029 | D 7672 | rR:mu sigma m M 0.03 0.13 0.00 0.52 | F:mu sigma m M 195.4 136.6 23.0 480.0 | H 1.098 | V 0.003 | pL 0.000 | vL 0.000 | delta 0.002
+U 108 | F 221184 | FPS 0028 | D 7747 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 210.1 123.2 51.0 476.0 | H 1.099 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.001
+U 109 | F 223232 | FPS 0027 | D 7823 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 208.4 177.5 11.0 738.0 | H 1.098 | V 0.003 | pL 0.001 | vL 0.000 | delta 0.002
+U 110 | F 225280 | FPS 0026 | D 7901 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 85.6 89.2 19.0 394.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 111 | F 227328 | FPS 0030 | D 7968 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 160.4 91.2 36.0 326.0 | H 1.098 | V 0.003 | pL -0.000 | vL 0.000 | delta 0.002
+U 112 | F 229376 | FPS 0028 | D 8041 | rR:mu sigma m M 0.05 0.19 0.00 0.79 | F:mu sigma m M 102.9 69.8 15.0 277.0 | H 1.098 | V 0.001 | pL -0.001 | vL 0.000 | delta 0.005
+U 113 | F 231424 | FPS 0027 | D 8116 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 194.9 130.3 33.0 500.0 | H 1.097 | V 0.004 | pL -0.000 | vL 0.000 | delta 0.004
+U 114 | F 233472 | FPS 0029 | D 8187 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 191.6 140.2 33.0 500.0 | H 1.095 | V 0.005 | pL 0.001 | vL 0.000 | delta 0.004
+U 115 | F 235520 | FPS 0028 | D 8261 | rR:mu sigma m M 0.04 0.15 0.00 0.60 | F:mu sigma m M 201.8 147.8 40.0 489.0 | H 1.097 | V 0.006 | pL -0.004 | vL 0.000 | delta 0.016
+U 116 | F 237568 | FPS 0028 | D 8334 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 227.3 159.7 33.0 489.0 | H 1.098 | V 0.009 | pL 0.002 | vL 0.000 | delta 0.002
+U 117 | F 239616 | FPS 0030 | D 8403 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 187.9 133.6 33.0 485.0 | H 1.098 | V 0.009 | pL 0.001 | vL 0.000 | delta 0.001
+U 118 | F 241664 | FPS 0028 | D 8475 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 161.8 117.5 27.0 451.0 | H 1.098 | V 0.009 | pL 0.003 | vL 0.000 | delta 0.005
+U 119 | F 243712 | FPS 0030 | D 8544 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 122.9 89.8 10.0 301.0 | H 1.098 | V 0.007 | pL 0.001 | vL 0.000 | delta 0.002
+U 120 | F 245760 | FPS 0027 | D 8621 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 135.0 116.8 17.0 453.0 | H 1.098 | V 0.004 | pL 0.002 | vL 0.000 | delta 0.001
+U 121 | F 247808 | FPS 0028 | D 8694 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 178.6 137.7 17.0 453.0 | H 1.098 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.001
+U 122 | F 249856 | FPS 0029 | D 8764 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 214.1 116.4 45.0 385.0 | H 1.099 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.000
+U 123 | F 251904 | FPS 0027 | D 8840 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 205.1 127.4 45.0 468.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 124 | F 253952 | FPS 0030 | D 8909 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 196.1 154.1 25.0 558.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 125 | F 256000 | FPS 0030 | D 8977 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 152.8 91.8 18.0 325.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.001
+U 126 | F 258048 | FPS 0034 | D 9037 | rR:mu sigma m M 0.04 0.16 0.00 0.68 | F:mu sigma m M 141.8 107.3 37.0 413.0 | H 1.095 | V 0.006 | pL -0.006 | vL 0.001 | delta 0.017
+U 127 | F 260096 | FPS 0029 | D 9106 | rR:mu sigma m M 0.04 0.16 0.00 0.68 | F:mu sigma m M 180.7 101.7 8.0 413.0 | H 1.096 | V 0.006 | pL 0.001 | vL 0.000 | delta 0.006
+U 128 | F 262144 | FPS 0029 | D 9178 | rR:mu sigma m M 0.05 0.18 0.00 0.73 | F:mu sigma m M 164.8 83.7 22.0 299.0 | H 1.094 | V 0.014 | pL -0.005 | vL 0.001 | delta 0.020
+U 129 | F 264192 | FPS 0030 | D 9245 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 146.9 117.4 17.0 350.0 | H 1.098 | V -0.001 | pL -0.000 | vL 0.000 | delta 0.003
+U 130 | F 266240 | FPS 0028 | D 9317 | rR:mu sigma m M 0.06 0.22 0.00 0.91 | F:mu sigma m M 134.5 116.1 20.0 403.0 | H 1.092 | V 0.010 | pL -0.006 | vL 0.001 | delta 0.018
+U 131 | F 268288 | FPS 0029 | D 9388 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 152.6 147.8 30.0 697.0 | H 1.092 | V 0.006 | pL 0.001 | vL 0.001 | delta 0.011
+U 132 | F 270336 | FPS 0032 | D 9452 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 137.2 103.6 28.0 401.0 | H 1.094 | V 0.004 | pL -0.001 | vL 0.000 | delta 0.005
+U 133 | F 272384 | FPS 0031 | D 9519 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 140.6 101.0 28.0 420.0 | H 1.097 | V 0.001 | pL 0.001 | vL 0.000 | delta 0.003
+U 134 | F 274432 | FPS 0030 | D 9586 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 150.1 122.2 19.0 420.0 | H 1.097 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.002
+U 135 | F 276480 | FPS 0031 | D 9651 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 194.1 149.0 25.0 541.0 | H 1.098 | V -0.000 | pL -0.000 | vL 0.000 | delta 0.001
+U 136 | F 278528 | FPS 0027 | D 9727 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 198.7 135.5 46.0 541.0 | H 1.097 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.001
+U 137 | F 280576 | FPS 0030 | D 9796 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 134.8 74.7 31.0 262.0 | H 1.098 | V 0.001 | pL -0.000 | vL 0.000 | delta 0.001
+U 138 | F 282624 | FPS 0027 | D 9874 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 176.4 159.3 11.0 647.0 | H 1.097 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.003
+U 139 | F 284672 | FPS 0029 | D 9944 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 208.3 163.9 11.0 647.0 | H 1.098 | V 0.000 | pL -0.000 | vL 0.000 | delta 0.002
+U 140 | F 286720 | FPS 0029 | D 10013 | rR:mu sigma m M 0.05 0.20 0.00 0.81 | F:mu sigma m M 151.4 104.4 31.0 482.0 | H 1.095 | V 0.008 | pL -0.007 | vL 0.001 | delta 0.010
+U 141 | F 288768 | FPS 0029 | D 10082 | rR:mu sigma m M 0.10 0.27 0.00 0.82 | F:mu sigma m M 263.1 242.1 31.0 900.0 | H 1.096 | V 0.012 | pL -0.006 | vL 0.001 | delta 0.012
+U 142 | F 290816 | FPS 0028 | D 10156 | rR:mu sigma m M 0.05 0.20 0.00 0.82 | F:mu sigma m M 213.6 210.9 39.0 706.0 | H 1.098 | V 0.005 | pL 0.002 | vL 0.000 | delta 0.003
+U 143 | F 292864 | FPS 0030 | D 10225 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 111.1 106.8 31.0 423.0 | H 1.098 | V 0.002 | pL -0.001 | vL 0.000 | delta 0.002
+U 144 | F 294912 | FPS 0030 | D 10293 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 207.9 177.0 32.0 667.0 | H 1.098 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.001
+U 145 | F 296960 | FPS 0031 | D 10360 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 163.1 106.1 32.0 337.0 | H 1.099 | V 0.001 | pL -0.000 | vL 0.000 | delta 0.000
+U 146 | F 299008 | FPS 0028 | D 10435 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 104.3 72.7 18.0 245.0 | H 1.098 | V 0.003 | pL 0.001 | vL 0.000 | delta 0.003
+U 147 | F 301056 | FPS 0027 | D 10510 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 144.6 93.4 42.0 308.0 | H 1.099 | V -0.000 | pL -0.000 | vL 0.000 | delta 0.000
+U 148 | F 303104 | FPS 0032 | D 10574 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 150.2 121.4 46.0 498.0 | H 1.098 | V -0.000 | pL -0.000 | vL 0.000 | delta 0.000
+U 149 | F 305152 | FPS 0030 | D 10642 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 186.6 112.6 57.0 498.0 | H 1.098 | V 0.001 | pL -0.000 | vL 0.000 | delta 0.001
+U 150 | F 307200 | FPS 0027 | D 10719 | rR:mu sigma m M 0.04 0.17 0.00 0.78 | F:mu sigma m M 183.5 158.1 14.0 704.0 | H 1.098 | V 0.005 | pL -0.006 | vL 0.001 | delta 0.011
+U 151 | F 309248 | FPS 0028 | D 10793 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 144.5 86.6 18.0 383.0 | H 1.098 | V 0.002 | pL -0.001 | vL 0.000 | delta 0.002
+U 152 | F 311296 | FPS 0028 | D 10865 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 164.0 88.3 18.0 383.0 | H 1.098 | V 0.004 | pL 0.001 | vL 0.000 | delta 0.002
+U 153 | F 313344 | FPS 0028 | D 10938 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 155.1 81.3 46.0 338.0 | H 1.098 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.001
+U 154 | F 315392 | FPS 0028 | D 11010 | rR:mu sigma m M 0.03 0.13 0.00 0.53 | F:mu sigma m M 223.1 159.2 63.0 491.0 | H 1.097 | V 0.008 | pL -0.003 | vL 0.000 | delta 0.014
+U 155 | F 317440 | FPS 0028 | D 11084 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 199.6 129.9 19.0 449.0 | H 1.098 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.001
+U 156 | F 319488 | FPS 0028 | D 11156 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 101.2 73.5 28.0 344.0 | H 1.096 | V 0.004 | pL 0.000 | vL 0.000 | delta 0.003
+U 157 | F 321536 | FPS 0028 | D 11230 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 205.2 166.6 36.0 697.0 | H 1.098 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.001
+U 158 | F 323584 | FPS 0028 | D 11305 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 199.2 112.1 36.0 429.0 | H 1.099 | V 0.000 | pL -0.000 | vL 0.000 | delta 0.000
+U 159 | F 325632 | FPS 0029 | D 11375 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 208.8 109.8 26.0 429.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 160 | F 327680 | FPS 0030 | D 11443 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 230.2 136.4 26.0 605.0 | H 1.099 | V 0.001 | pL -0.000 | vL 0.000 | delta 0.000
+U 161 | F 329728 | FPS 0025 | D 11526 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 184.1 128.2 34.0 459.0 | H 1.099 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.000
+U 162 | F 331776 | FPS 0032 | D 11589 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 169.8 138.3 34.0 459.0 | H 1.099 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.000
+U 163 | F 333824 | FPS 0028 | D 11662 | rR:mu sigma m M 0.05 0.18 0.00 0.73 | F:mu sigma m M 227.0 145.0 9.0 502.0 | H 1.096 | V 0.008 | pL -0.006 | vL 0.001 | delta 0.010
+U 164 | F 335872 | FPS 0029 | D 11732 | rR:mu sigma m M 0.05 0.18 0.00 0.73 | F:mu sigma m M 142.3 100.8 15.0 337.0 | H 1.098 | V -0.001 | pL -0.000 | vL 0.000 | delta 0.001
+U 165 | F 337920 | FPS 0030 | D 11801 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 163.6 112.1 18.0 404.0 | H 1.099 | V -0.001 | pL -0.000 | vL 0.000 | delta 0.001
+U 166 | F 339968 | FPS 0029 | D 11870 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 171.2 198.3 27.0 900.0 | H 1.099 | V -0.001 | pL -0.000 | vL 0.000 | delta 0.000
+U 167 | F 342016 | FPS 0028 | D 11943 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 247.6 259.5 24.0 900.0 | H 1.098 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.001
+U 168 | F 344064 | FPS 0029 | D 12014 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 176.4 146.8 24.0 637.0 | H 1.099 | V 0.000 | pL -0.000 | vL 0.000 | delta 0.000
+U 169 | F 346112 | FPS 0027 | D 12089 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 133.9 61.5 37.0 261.0 | H 1.098 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.002
+U 170 | F 348160 | FPS 0034 | D 12149 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 200.0 183.2 32.0 678.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 171 | F 350208 | FPS 0029 | D 12220 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 144.6 101.7 10.0 375.0 | H 1.098 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.002
+U 172 | F 352256 | FPS 0026 | D 12298 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 151.7 142.5 28.0 663.0 | H 1.098 | V 0.002 | pL -0.000 | vL 0.000 | delta 0.000
+U 173 | F 354304 | FPS 0028 | D 12370 | rR:mu sigma m M 0.04 0.15 0.00 0.63 | F:mu sigma m M 171.1 157.8 28.0 663.0 | H 1.096 | V 0.009 | pL -0.004 | vL 0.001 | delta 0.010
+U 174 | F 356352 | FPS 0028 | D 12443 | rR:mu sigma m M 0.04 0.15 0.00 0.63 | F:mu sigma m M 165.1 105.5 36.0 372.0 | H 1.098 | V 0.000 | pL -0.000 | vL 0.000 | delta 0.001
+U 175 | F 358400 | FPS 0030 | D 12510 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 209.3 121.7 23.0 424.0 | H 1.099 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.000
+U 176 | F 360448 | FPS 0029 | D 12580 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 168.0 160.9 20.0 629.0 | H 1.099 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.000
+U 177 | F 362496 | FPS 0028 | D 12653 | rR:mu sigma m M 0.05 0.20 0.00 0.86 | F:mu sigma m M 143.2 139.4 20.0 579.0 | H 1.087 | V 0.007 | pL -0.008 | vL 0.001 | delta 0.014
+U 178 | F 364544 | FPS 0029 | D 12724 | rR:mu sigma m M 0.05 0.21 0.00 0.86 | F:mu sigma m M 120.7 88.6 32.0 317.0 | H 1.095 | V 0.003 | pL 0.000 | vL 0.000 | delta 0.009
+U 179 | F 366592 | FPS 0032 | D 12789 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 135.1 108.6 22.0 402.0 | H 1.098 | V 0.004 | pL 0.001 | vL 0.000 | delta 0.002
+U 180 | F 368640 | FPS 0029 | D 12860 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 205.2 209.3 38.0 900.0 | H 1.096 | V 0.006 | pL -0.000 | vL 0.000 | delta 0.003
+U 181 | F 370688 | FPS 0030 | D 12929 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 135.0 94.0 21.0 416.0 | H 1.096 | V 0.010 | pL 0.003 | vL 0.000 | delta 0.008
+U 182 | F 372736 | FPS 0030 | D 12998 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 177.6 159.8 21.0 537.0 | H 1.098 | V 0.008 | pL 0.002 | vL 0.000 | delta 0.003
+U 183 | F 374784 | FPS 0028 | D 13072 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 200.1 182.1 13.0 706.0 | H 1.098 | V 0.004 | pL 0.001 | vL 0.000 | delta 0.001
+U 184 | F 376832 | FPS 0028 | D 13144 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 150.8 94.9 28.0 376.0 | H 1.098 | V 0.005 | pL 0.001 | vL 0.000 | delta 0.002
+U 185 | F 378880 | FPS 0028 | D 13216 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 153.1 113.3 24.0 447.0 | H 1.098 | V 0.004 | pL 0.001 | vL 0.000 | delta 0.003
+U 186 | F 380928 | FPS 0026 | D 13295 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 182.8 123.9 23.0 430.0 | H 1.099 | V 0.002 | pL 0.000 | vL 0.000 | delta 0.001
+U 187 | F 382976 | FPS 0027 | D 13370 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 163.1 120.3 23.0 430.0 | H 1.098 | V 0.003 | pL 0.000 | vL 0.000 | delta 0.001
+U 188 | F 385024 | FPS 0030 | D 13438 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 216.6 158.5 44.0 586.0 | H 1.098 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.001
+U 189 | F 387072 | FPS 0031 | D 13504 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 204.8 144.4 46.0 452.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 190 | F 389120 | FPS 0027 | D 13579 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 106.9 75.9 20.0 285.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 191 | F 391168 | FPS 0028 | D 13652 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 179.6 168.2 24.0 650.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 192 | F 393216 | FPS 0026 | D 13729 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 194.7 247.6 20.0 900.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 193 | F 395264 | FPS 0030 | D 13796 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 125.3 82.2 9.0 287.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 194 | F 397312 | FPS 0028 | D 13870 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 183.4 128.0 41.0 470.0 | H 1.099 | V 0.000 | pL 0.000 | vL 0.000 | delta 0.000
+U 195 | F 399360 | FPS 0028 | D 13943 | rR:mu sigma m M 0.05 0.20 0.00 0.84 | F:mu sigma m M 182.2 174.3 54.0 763.0 | H 1.096 | V 0.005 | pL -0.007 | vL 0.001 | delta 0.009
+U 196 | F 401408 | FPS 0029 | D 14013 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 112.5 57.8 21.0 300.0 | H 1.098 | V 0.001 | pL 0.001 | vL 0.000 | delta 0.001
+U 197 | F 403456 | FPS 0031 | D 14080 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 170.5 121.3 32.0 414.0 | H 1.098 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.001
+U 198 | F 405504 | FPS 0033 | D 14142 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 188.4 114.8 32.0 414.0 | H 1.098 | V 0.003 | pL 0.001 | vL 0.000 | delta 0.001
+U 199 | F 407552 | FPS 0028 | D 14215 | rR:mu sigma m M 0.05 0.20 0.00 0.83 | F:mu sigma m M 224.2 157.4 27.0 601.0 | H 1.097 | V 0.012 | pL -0.006 | vL 0.001 | delta 0.015
+U 200 | F 409600 | FPS 0030 | D 14284 | rR:mu sigma m M 0.08 0.22 0.00 0.83 | F:mu sigma m M 218.6 146.6 50.0 628.0 | H 1.096 | V 0.013 | pL 0.001 | vL 0.000 | delta 0.004
+U 201 | F 411648 | FPS 0032 | D 14348 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 168.8 111.1 27.0 444.0 | H 1.098 | V 0.005 | pL 0.001 | vL 0.000 | delta 0.001
+U 202 | F 413696 | FPS 0028 | D 14420 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 159.1 111.5 11.0 389.0 | H 1.098 | V 0.004 | pL 0.001 | vL 0.000 | delta 0.002
+U 203 | F 415744 | FPS 0026 | D 14498 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 173.4 153.6 18.0 528.0 | H 1.099 | V 0.003 | pL 0.001 | vL 0.000 | delta 0.001
+U 204 | F 417792 | FPS 0027 | D 14574 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 125.2 76.7 30.0 318.0 | H 1.098 | V 0.002 | pL 0.001 | vL 0.000 | delta 0.001
+U 205 | F 419840 | FPS 0031 | D 14640 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 131.0 87.2 9.0 275.0 | H 1.099 | V 0.001 | pL 0.000 | vL 0.000 | delta 0.000
+U 206 | F 421888 | FPS 0031 | D 14707 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 120.1 68.5 43.0 260.0 | H 1.099 | V 0.002 | pL -0.000 | vL 0.000 | delta 0.000
+U 207 | F 423936 | FPS 0027 | D 14782 | rR:mu sigma m M 0.03 0.13 0.00 0.57 | F:mu sigma m M 156.5 115.5 22.0 433.0 | H 1.095 | V 0.005 | pL -0.004 | vL 0.001 | delta 0.008
+U 208 | F 425984 | FPS 0031 | D 14848 | rR:mu sigma m M 0.05 0.19 0.00 0.79 | F:mu sigma m M 112.3 58.0 9.0 209.0 | H 1.095 | V 0.017 | pL -0.004 | vL 0.001 | delta 0.016
+U 209 | F 428032 | FPS 0029 | D 14920 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 133.9 102.9 38.0 392.0 | H 1.098 | V 0.004 | pL -0.003 | vL 0.000 | delta 0.014
+U 210 | F 430080 | FPS 0030 | D 14987 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 126.8 81.1 16.0 317.0 | H 1.096 | V 0.012 | pL -0.003 | vL 0.001 | delta 0.008
+U 211 | F 432128 | FPS 0026 | D 15065 | rR:mu sigma m M 0.10 0.27 0.00 0.88 | F:mu sigma m M 128.1 58.3 47.0 236.0 | H 1.082 | V 0.034 | pL -0.007 | vL 0.001 | delta 0.019
+U 212 | F 434176 | FPS 0030 | D 15133 | rR:mu sigma m M 0.05 0.19 0.00 0.79 | F:mu sigma m M 160.9 107.0 36.0 440.0 | H 1.081 | V 0.041 | pL 0.003 | vL 0.002 | delta 0.022
+U 213 | F 436224 | FPS 0033 | D 15195 | rR:mu sigma m M 0.05 0.19 0.00 0.79 | F:mu sigma m M 163.2 97.1 19.0 365.0 | H 1.086 | V 0.020 | pL 0.003 | vL 0.001 | delta 0.013
+U 214 | F 438272 | FPS 0034 | D 15256 | rR:mu sigma m M 0.04 0.18 0.00 0.83 | F:mu sigma m M 153.1 121.5 38.0 560.0 | H 1.081 | V 0.020 | pL -0.003 | vL 0.001 | delta 0.021
+U 215 | F 440320 | FPS 0031 | D 15322 | rR:mu sigma m M 0.05 0.21 0.00 0.85 | F:mu sigma m M 126.5 94.0 30.0 386.0 | H 1.086 | V 0.026 | pL -0.008 | vL 0.002 | delta 0.024
+U 216 | F 442368 | FPS 0033 | D 15384 | rR:mu sigma m M 0.06 0.21 0.00 0.89 | F:mu sigma m M 142.9 87.2 11.0 294.0 | H 1.089 | V 0.017 | pL -0.001 | vL 0.001 | delta 0.012
+U 217 | F 444416 | FPS 0033 | D 15446 | rR:mu sigma m M 0.04 0.17 0.00 0.73 | F:mu sigma m M 138.1 144.6 34.0 627.0 | H 1.088 | V 0.022 | pL -0.003 | vL 0.001 | delta 0.014
+U 218 | F 446464 | FPS 0033 | D 15509 | rR:mu sigma m M 0.04 0.17 0.00 0.73 | F:mu sigma m M 104.8 87.5 24.0 349.0 | H 1.077 | V 0.042 | pL 0.001 | vL 0.001 | delta 0.016
+U 219 | F 448512 | FPS 0031 | D 15576 | rR:mu sigma m M 0.07 0.20 0.00 0.73 | F:mu sigma m M 156.1 183.5 13.0 632.0 | H 1.090 | V 0.020 | pL 0.000 | vL 0.001 | delta 0.019
+U 220 | F 450560 | FPS 0027 | D 15652 | rR:mu sigma m M 0.03 0.10 0.00 0.42 | F:mu sigma m M 178.6 127.7 29.0 577.0 | H 1.097 | V -0.006 | pL -0.002 | vL 0.000 | delta 0.002
+U 221 | F 452608 | FPS 0029 | D 15724 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 181.1 119.2 25.0 475.0 | H 1.096 | V 0.004 | pL -0.004 | vL 0.000 | delta 0.008
+U 222 | F 454656 | FPS 0033 | D 15786 | rR:mu sigma m M 0.05 0.18 0.00 0.75 | F:mu sigma m M 177.6 121.6 25.0 475.0 | H 1.093 | V 0.023 | pL -0.002 | vL 0.002 | delta 0.016
+U 223 | F 456704 | FPS 0029 | D 15857 | rR:mu sigma m M 0.10 0.26 0.00 0.81 | F:mu sigma m M 110.9 64.1 21.0 226.0 | H 1.092 | V 0.020 | pL -0.008 | vL 0.001 | delta 0.023
+U 224 | F 458752 | FPS 0031 | D 15923 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 167.1 108.0 53.0 362.0 | H 1.095 | V 0.023 | pL 0.004 | vL 0.000 | delta 0.024
+U 225 | F 460800 | FPS 0030 | D 15992 | rR:mu sigma m M 0.05 0.20 0.00 0.83 | F:mu sigma m M 162.7 118.8 33.0 495.0 | H 1.089 | V 0.017 | pL -0.006 | vL 0.001 | delta 0.018
+U 226 | F 462848 | FPS 0025 | D 16072 | rR:mu sigma m M 0.05 0.20 0.00 0.83 | F:mu sigma m M 135.5 68.0 33.0 266.0 | H 1.093 | V 0.024 | pL 0.004 | vL 0.000 | delta 0.012
+U 227 | F 464896 | FPS 0030 | D 16140 | rR:mu sigma m M 0.00 0.00 0.00 0.00 | F:mu sigma m M 163.7 108.2 26.0 453.0 | H 1.084 | V 0.035 | pL 0.001 | vL 0.001 | delta 0.013
+U 228 | F 466944 | FPS 0031 | D 16205 | rR:mu sigma m M 0.06 0.21 0.00 0.88 | F:mu sigma m M 276.2 177.0 90.0 647.0 | H 1.083 | V 0.026 | pL 0.001 | vL 0.001 | delta 0.012
+U 229 | F 468992 | FPS 0031 | D 16271 | rR:mu sigma m M 0.04 0.17 0.00 0.69 | F:mu sigma m M 158.9 79.3 76.0 331.0 | H 1.082 | V 0.046 | pL 0.002 | vL 0.002 | delta 0.020
+U 230 | F 471040 | FPS 0029 | D 16343 | rR:mu sigma m M 0.20 0.35 0.00 0.88 | F:mu sigma m M 183.8 81.7 67.0 331.0 | H 1.066 | V 0.053 | pL -0.013 | vL 0.003 | delta 0.028
+U 231 | F 473088 | FPS 0028 | D 16416 | rR:mu sigma m M 0.30 0.39 0.00 0.88 | F:mu sigma m M 175.4 77.7 67.0 315.0 | H 1.058 | V 0.097 | pL -0.002 | vL 0.005 | delta 0.035
+U 232 | F 475136 | FPS 0027 | D 16492 | rR:mu sigma m M 0.19 0.33 0.00 0.85 | F:mu sigma m M 217.9 85.3 69.0 349.0 | H 1.058 | V 0.059 | pL 0.003 | vL 0.001 | delta 0.018
+U 233 | F 477184 | FPS 0031 | D 16558 | rR:mu sigma m M 0.34 0.39 0.00 0.85 | F:mu sigma m M 193.8 102.6 43.0 366.0 | H 1.029 | V 0.131 | pL -0.024 | vL 0.005 | delta 0.044
+U 234 | F 479232 | FPS 0030 | D 16626 | rR:mu sigma m M 0.35 0.36 0.00 0.83 | F:mu sigma m M 209.6 134.1 31.0 502.0 | H 1.026 | V 0.138 | pL -0.014 | vL 0.003 | delta 0.032
+U 235 | F 481280 | FPS 0039 | D 16679 | rR:mu sigma m M 0.33 0.40 0.00 0.90 | F:mu sigma m M 150.4 106.8 27.0 457.0 | H 1.007 | V 0.129 | pL -0.006 | vL 0.003 | delta 0.036
+U 236 | F 483328 | FPS 0038 | D 16733 | rR:mu sigma m M 0.33 0.41 0.00 0.94 | F:mu sigma m M 138.7 66.0 34.0 278.0 | H 0.915 | V 0.185 | pL -0.012 | vL 0.008 | delta 0.050
+U 237 | F 485376 | FPS 0042 | D 16782 | rR:mu sigma m M 0.35 0.43 0.00 0.95 | F:mu sigma m M 84.7 49.4 36.0 246.0 | H 0.891 | V 0.202 | pL -0.026 | vL 0.011 | delta 0.086
+U 238 | F 487424 | FPS 0044 | D 16828 | rR:mu sigma m M 0.57 0.43 0.00 0.94 | F:mu sigma m M 85.4 38.4 12.0 188.0 | H 0.825 | V 0.250 | pL -0.068 | vL 0.010 | delta 0.100
+U 239 | F 489472 | FPS 0050 | D 16869 | rR:mu sigma m M 0.86 0.19 0.00 0.94 | F:mu sigma m M 102.5 27.4 60.0 154.0 | H 0.723 | V 0.357 | pL -0.071 | vL 0.008 | delta 0.111
+U 240 | F 491520 | FPS 0054 | D 16907 | rR:mu sigma m M 0.71 0.40 0.00 0.97 | F:mu sigma m M 62.3 36.5 15.0 154.0 | H 0.589 | V 0.504 | pL -0.062 | vL 0.016 | delta 0.098
+U 241 | F 493568 | FPS 0064 | D 16939 | rR:mu sigma m M 0.87 0.23 0.00 0.97 | F:mu sigma m M 70.1 46.5 26.0 256.0 | H 0.611 | V 0.575 | pL -0.044 | vL 0.010 | delta 0.129
+U 242 | F 495616 | FPS 0070 | D 16968 | rR:mu sigma m M 0.90 0.23 0.00 0.97 | F:mu sigma m M 46.6 23.6 15.0 172.0 | H 0.467 | V 0.675 | pL -0.079 | vL 0.008 | delta 0.096
+U 243 | F 497664 | FPS 0075 | D 16996 | rR:mu sigma m M 0.95 0.13 0.00 0.98 | F:mu sigma m M 37.6 10.1 25.0 67.0 | H 0.357 | V 0.757 | pL -0.055 | vL 0.005 | delta 0.071
+U 244 | F 499712 | FPS 0077 | D 17023 | rR:mu sigma m M 0.97 0.01 0.95 0.98 | F:mu sigma m M 32.3 6.2 25.0 47.0 | H 0.307 | V 0.790 | pL -0.050 | vL 0.001 | delta 0.044
+agent reach optimality, start collecting trajectories
+agent successfully collected 10 trajectories
+pickling optimal trajectories
+Model successfully saved
+/home/rdali/.local/easybuild/software/2017/Core/miniconda3/4.3.27/envs/observe/lib/python3.6/site-packages/torch/nn/functional.py:1906: UserWarning: reduction: 'mean' divides the total loss by both the batch size and the support size.'batchmean' divides only by the batch size, and aligns with the KL div math definition.'mean' will be changed to behave the same as 'batchmean' in the next major release.
+  warnings.warn("reduction: 'mean' divides the total loss by both the batch size and the support size."
