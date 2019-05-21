@@ -329,10 +329,10 @@ if __name__ == '__main__':
     f= open('demonstratorSSrep_' + str(args.nameDemonstrator) +'.pkl', 'wb')
     pickle.dump(stateOccupancyList, f)
 
-    f = open('stateToIndex.pkl', 'wb')
+    f = open('stateToIndex_flower.pkl', 'wb')
     pickle.dump(stateToIndex, f)
 
-    f = open('indexToState.pkl', 'wb')
+    f = open('indexToState_flower.pkl', 'wb')
     pickle.dump(indexToState, f)
 
 

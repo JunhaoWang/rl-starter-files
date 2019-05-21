@@ -217,9 +217,9 @@ if __name__ == '__main__':
         file = open('demonstratorSSrep_' + str(name) +'.pkl', 'rb')
         demonstratorSSRep.append(pickle.load(file))
 
-    file = open('stateToIndex.pkl', 'rb')
+    file = open('stateToIndex_superflower.pkl', 'rb')
     stateToIndex = pickle.load(file)
-    file = open('indexToState.pkl', 'rb')
+    file = open('indexToState_superflower.pkl', 'rb')
     indexToState = pickle.load(file)
 
 
