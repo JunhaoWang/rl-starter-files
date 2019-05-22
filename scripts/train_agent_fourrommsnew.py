@@ -23,6 +23,14 @@ from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, g
 from utils.misc import getSSRepHelperMeta
 from torch_ac.utils import DictList
 import datetime
+import pickle
+
+#from pympler import asizeof
+import os
+
+
+
+
 
 from sklearn.metrics import mutual_info_score
 
@@ -35,7 +43,8 @@ parser.add_argument("--algo", required=True,
                     help="algorithm to use: a2c | ppo (REQUIRED)")
 parser.add_argument("--env", required=True,
                     help="name of the environment to train on (REQUIRED)")
-parser.add_argument('-nameDemonstrator', '--nameDemonstrator', help='delimited list input of dem names pickle files', type=str)
+parser.add_argument("--nameDemonstrator", required=True,
+                    help="name of the demonstrator enviorment for output (REQUIRED)")
 
 parser.add_argument("--meanReward", type=float, default=0.85,
                     help="mean reward required to stop")
@@ -202,24 +211,16 @@ if __name__ == '__main__':
     logger.info("CUDA available: {}\n".format(torch.cuda.is_available()))
 
     # Define actor-critic algo
-    print(args.useKL)
+    
     useKL=bool(args.useKL)
-    print(useKL)
+    print("Do we use KL ? %s " %useKL)
     KLweight=float(args.KLweight)
-    print(KLweight)
-    import pickle
-
-    dem_names = [str(item) for item in args.nameDemonstrator.split(',')]
-
-    demonstratorSSRep=list()
-
-    for name in dem_names:
-        file = open('demonstratorSSrep_' + str(name) +'.pkl', 'rb')
-        demonstratorSSRep.append(pickle.load(file))
-
-    file = open('stateToIndex_flower.pkl', 'rb')
+    print("KL weight : %s" %KLweight)
+    file = open('demonstratorSSrep_' + str(args.nameDemonstrator) +'.pkl', 'rb')
+    demonstratorSSRep = pickle.load(file)
+    file = open('stateToIndex_fourroomsnew.pkl', 'rb')
     stateToIndex = pickle.load(file)
-    file = open('indexToState_flower.pkl', 'rb')
+    file = open('indexToState_fourroomsnew.pkl', 'rb')
     indexToState = pickle.load(file)
 
 
@@ -258,8 +259,14 @@ if __name__ == '__main__':
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
         if useKL:
+            #print('=' * 20, 'debug memory')
+            #print('264: ', process.memory_info().rss)
             ###CALCULATE THE CURRENT STATE TRAJ
             optimal_trajs = make_dem(100, acmodel)
+
+            #print('268: ', process.memory_info().rss)
+            #print('optimal_trajs: ', asizeof.asizeof(optimal_trajs))
+
             # optimal_trajs=np.array(optimal_trajs)
             #print(len(optimal_trajs))
             first = optimal_trajs[0]
@@ -267,15 +274,21 @@ if __name__ == '__main__':
             #stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
             #print(stateToIndex)
-
-
             stateOccupancyList = []
 
             for i in range(len(optimal_trajs)):
                 indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
                 stateOccupancyList.append(indexedTraj)
 
+            #print('282: ', process.memory_info().rss)
+            #print('indexedTraj: ', asizeof.asizeof(indexedTraj))
+            #print('stateOccupancyList: ', asizeof.asizeof(stateOccupancyList))
+
             stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
+
+            #print('288: ', process.memory_info().rss)
+            #print('stateOccupancyList: ', asizeof.asizeof(stateOccupancyList))
+            #print('=' * 20, 'debug memory')
 
             #print(stateOccupancyList)
         else:
@@ -359,13 +372,17 @@ if __name__ == '__main__':
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
+    #print(stateToIndex)
     stateOccupancyList = []
 
     for i in range(len(optimal_trajs)):
         indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
         stateOccupancyList.append(indexedTraj)
 
+    #print(stateOccupancyList)
+
     stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateAverage, method='every')
+    #print(stateOccupancyList)
 
     if useKL:
         testType = "PPOwKL" + str(KLweight) + "meanReward" + str(PERFORMANCE_THRESHOLD) + "lowerBound" + str(LB_PERFORMANCE_THRESHOLD) +str(datetime.datetime.now().strftime("%y-%m-%d-%H-%M-%S"))
@@ -377,10 +394,10 @@ if __name__ == '__main__':
     f = open('agentSSrep_' + testType + '.pkl', 'wb')
     pickle.dump(stateOccupancyList, f)
 
-    f = open('stateToIndex_flower_out.pkl', 'wb')
+    f = open('stateToIndex_fourroomsnew_out_{}.pkl'.format(testType), 'wb')
     pickle.dump(stateToIndex, f)
 
-    f = open('indexToState_flower_out.pkl', 'wb')
+    f = open('indexToState_fourroomsnew_out_{}.pkl'.format(testType), 'wb')
     pickle.dump(indexToState, f)
 
     if torch.cuda.is_available():

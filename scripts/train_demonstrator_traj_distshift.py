@@ -22,9 +22,7 @@ from utils.aggregators import aggregateAverage, aggregateVAE
 from utils.getIndexedArrayFromTrajectory import getIndexedArrayFromTrajectory, getStateIndexTraj
 from utils.misc import getSSRepHelperMeta
 from torch_ac.utils import DictList
-import datetime
-
-from sklearn.metrics import mutual_info_score
+#from utils.neural_density import NeuralDensity
 
 
 
@@ -35,16 +33,8 @@ parser.add_argument("--algo", required=True,
                     help="algorithm to use: a2c | ppo (REQUIRED)")
 parser.add_argument("--env", required=True,
                     help="name of the environment to train on (REQUIRED)")
-parser.add_argument('-nameDemonstrator', '--nameDemonstrator', help='delimited list input of dem names pickle files', type=str)
-
-parser.add_argument("--meanReward", type=float, default=0.85,
-                    help="mean reward required to stop")
-parser.add_argument("--rewardLB", type=float, default=0.8,
-                    help="minimum reward required to stop")
-parser.add_argument("--KLweight", type=float, default=0.0001,
-                    help="KL weight term")
-parser.add_argument("--useKL", type=int, default=True,
-                    help="do we use a KL term")
+parser.add_argument("--nameDemonstrator", required=True,
+                    help="name of the demonstrator enviorment for output (REQUIRED)")
 
 parser.add_argument("--model", default=None,
                     help="name of the model (default: {ENV}_{ALGO}_{TIME})")
@@ -90,10 +80,18 @@ parser.add_argument("--text", action="store_true", default=False,
                     help="add a GRU to the model to handle text input")
 parser.add_argument("--full-obs", type=int, default=0, help="full-obs")
 parser.add_argument("--flat-model", type=int, default=0, help="use flat neural architecture instead of CNN")
+parser.add_argument("--arch", type=int, default=0,
+                    help="architecture type, default 0, indicates the number of linear layers between the CNN and actor-critic")
+
+parser.add_argument("--meanReward", type=float, default=0.85,
+                    help="mean reward required to stop")
+parser.add_argument("--rewardLB", type=float, default=0.8,
+                    help="minimum reward required to stop")
 args = parser.parse_args()
 args.mem = args.recurrence > 1
 
 
+#TODO : put that in utils
 def make_dem(nb_trajs, model):
     obss = []
     trajs = []
@@ -134,8 +132,8 @@ device   = torch.device("cuda" if use_cuda else "cpu")
 # Define run dir
 ## important constant
 MAX_SAMPLE = 10
-PERFORMANCE_THRESHOLD = float(args.meanReward)
-LB_PERFORMANCE_THRESHOLD= float(args.rewardLB)
+PERFORMANCE_THRESHOLD = args.meanReward
+LB_PERFORMANCE_THRESHOLD = args.rewardLB
 RECORD_OPTIMAL_TRAJ = False
 OPTIMAL_TRAJ_START_IDX = -1
 
@@ -161,8 +159,6 @@ logger.info("{}\n".format(args))
 
 utils.seed(args.seed)
 
-
-
 # Generate environments
 if __name__ == '__main__':
     envs = []
@@ -183,11 +179,11 @@ if __name__ == '__main__':
 
     status = {"num_frames": 0, "update": 0}
 
-
     if(bool(args.flat_model)):
         acmodel = ACModelFlat(obs_space, envs[0].action_space, args.mem, args.text)
     else:
-        acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text)
+        print('ok')
+        acmodel = ACModel(obs_space, envs[0].action_space, args.mem, args.text, args.arch)
 
     logger.info("Flat model successfully created\n")
 
@@ -202,26 +198,7 @@ if __name__ == '__main__':
     logger.info("CUDA available: {}\n".format(torch.cuda.is_available()))
 
     # Define actor-critic algo
-    print(args.useKL)
-    useKL=bool(args.useKL)
-    print(useKL)
-    KLweight=float(args.KLweight)
-    print(KLweight)
-    import pickle
-
-    dem_names = [str(item) for item in args.nameDemonstrator.split(',')]
-
-    demonstratorSSRep=list()
-
-    for name in dem_names:
-        file = open('demonstratorSSrep_' + str(name) +'.pkl', 'rb')
-        demonstratorSSRep.append(pickle.load(file))
-
-    file = open('stateToIndex_flower.pkl', 'rb')
-    stateToIndex = pickle.load(file)
-    file = open('indexToState_flower.pkl', 'rb')
-    indexToState = pickle.load(file)
-
+    useKL=False
 
 
     if args.algo == "a2c":
@@ -232,7 +209,7 @@ if __name__ == '__main__':
         algo = torch_ac.PPOAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
                                 args.entropy_coef, args.value_loss_coef, args.max_grad_norm, args.recurrence,
                                 args.optim_eps, args.clip_eps, args.epochs, args.batch_size, preprocess_obss,
-                                None,useKL,KLweight,stateToIndex,demonstratorSSRep)
+                                None,useKL)
     else:
         raise ValueError("Incorrect algorithm name: {}".format(args.algo))
 
@@ -243,7 +220,6 @@ if __name__ == '__main__':
     update = status["update"]
 
     optimal_trajs=[]
-    decay = 0
 
     while num_frames < args.frames:
         # # visualize state representation
@@ -257,31 +233,7 @@ if __name__ == '__main__':
 
         update_start_time = time.time()
         exps, logs1 = algo.collect_experiences()
-        if useKL:
-            ###CALCULATE THE CURRENT STATE TRAJ
-            optimal_trajs = make_dem(100, acmodel)
-            # optimal_trajs=np.array(optimal_trajs)
-            #print(len(optimal_trajs))
-            first = optimal_trajs[0]
-
-            #stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
-
-            #print(stateToIndex)
-
-
-            stateOccupancyList = []
-
-            for i in range(len(optimal_trajs)):
-                indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
-                stateOccupancyList.append(indexedTraj)
-
-            stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
-
-            #print(stateOccupancyList)
-        else:
-            stateOccupancyList = []
-        decay += 1
-        logs2 = algo.update_parameters(exps,stateOccupancyList,decay,1)
+        logs2 = algo.update_parameters(exps,0,0,0)
         logs = {**logs1, **logs2}
         update_end_time = time.time()
 
@@ -309,10 +261,9 @@ if __name__ == '__main__':
                 "U {} | F {:06} | FPS {:04.0f} | D {} | rR:mu sigma m M {:.2f} {:.2f} {:.2f} {:.2f} | F:mu sigma m M {:.1f} {:.1f} {} {} | H {:.3f} | V {:.3f} | pL {:.3f} | vL {:.3f} | delta {:.3f}"
                 .format(*data))
             ######################################################
-
             # get optimal trajectory after reaching optimality
             mean_performance_lowerbound = data[4]
-            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > LB_PERFORMANCE_THRESHOLD:
+            if mean_performance_lowerbound > PERFORMANCE_THRESHOLD and data[6] > LB_PERFORMANCE_THRESHOLD:                
                 print('agent reach optimality, start collecting trajectories')
                 RECORD_OPTIMAL_TRAJ = True
                 #OPTIMAL_TRAJ_START_IDX = optimal_trajs.shape[0]
@@ -354,41 +305,42 @@ if __name__ == '__main__':
     #else:
     #    raise Exception('optimality not reached')
 
-    optimal_trajs = make_dem(1000, acmodel)
-    # optimal_trajs=np.array(optimal_trajs)
+    optimal_trajs=make_dem(1000,acmodel)
+    #optimal_trajs=np.array(optimal_trajs)
+    print("number of episodes sampled %s" %len(optimal_trajs))
+    first=optimal_trajs[0]
 
     stateToIndex, indexToState = getIndexedArrayFromTrajectory(optimal_trajs[0])
 
+    #print(stateToIndex)
     stateOccupancyList = []
 
     for i in range(len(optimal_trajs)):
-        indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
+        indexedTraj = getStateIndexTraj(optimal_trajs[i],stateToIndex, indexToState)
         stateOccupancyList.append(indexedTraj)
 
-    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateAverage, method='every')
+    #print(stateOccupancyList)
 
-    if useKL:
-        testType = "PPOwKL" + str(KLweight) + "meanReward" + str(PERFORMANCE_THRESHOLD) + "lowerBound" + str(LB_PERFORMANCE_THRESHOLD) +str(datetime.datetime.now().strftime("%y-%m-%d-%H-%M-%S"))
-    else:
-        testType ="PPOexpertOnlyNoKL"
+    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateVAE,method='every')
+    #print(stateOccupancyList)
 
     import pickle
 
-    f = open('agentSSrep_' + testType + '.pkl', 'wb')
+    f= open('demonstratorSSrep_' + str(args.nameDemonstrator) +'.pkl', 'wb')
     pickle.dump(stateOccupancyList, f)
 
-    f = open('stateToIndex_flower_out.pkl', 'wb')
+    f = open('stateToIndex_distshift.pkl', 'wb')
     pickle.dump(stateToIndex, f)
 
-    f = open('indexToState_flower_out.pkl', 'wb')
+    f = open('indexToState_distshift.pkl', 'wb')
     pickle.dump(indexToState, f)
+
 
     if torch.cuda.is_available():
         acmodel.cpu()
-    utils.save_model(acmodel, 'storage/agentModel' + testType)
+    utils.save_model(acmodel, 'storage/drugAddictMode' + str(args.nameDemonstrator))
     logger.info("Model successfully saved")
     if torch.cuda.is_available():
         acmodel.cuda()
 
-    utils.save_status(status, 'storage/agentModel' + testType)
-
+    utils.save_status(status, 'storage/drugAddictMode' + str(args.nameDemonstrator))

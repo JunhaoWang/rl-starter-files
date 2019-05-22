@@ -217,9 +217,9 @@ if __name__ == '__main__':
         file = open('demonstratorSSrep_' + str(name) +'.pkl', 'rb')
         demonstratorSSRep.append(pickle.load(file))
 
-    file = open('stateToIndex_flower.pkl', 'rb')
+    file = open('stateToIndex_distshift.pkl', 'rb')
     stateToIndex = pickle.load(file)
-    file = open('indexToState_flower.pkl', 'rb')
+    file = open('indexToState_distshift.pkl', 'rb')
     indexToState = pickle.load(file)
 
 
@@ -377,10 +377,10 @@ if __name__ == '__main__':
     f = open('agentSSrep_' + testType + '.pkl', 'wb')
     pickle.dump(stateOccupancyList, f)
 
-    f = open('stateToIndex_flower_out.pkl', 'wb')
+    f = open('stateToIndex_distshift_out_{}.pkl'.format(testType), 'wb')
     pickle.dump(stateToIndex, f)
 
-    f = open('indexToState_flower_out.pkl', 'wb')
+    f = open('indexToState_distshift_out_{}.pkl'.format(testType), 'wb')
     pickle.dump(indexToState, f)
 
     if torch.cuda.is_available():
