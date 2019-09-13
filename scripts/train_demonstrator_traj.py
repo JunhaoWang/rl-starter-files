@@ -199,7 +199,7 @@ if __name__ == '__main__':
 
     # Define actor-critic algo
     useKL=False
-
+    useCVAR=False
 
     if args.algo == "a2c":
         algo = torch_ac.A2CAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,

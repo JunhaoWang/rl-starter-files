@@ -223,7 +223,7 @@ if __name__ == '__main__':
     file = open('indexToState.pkl', 'rb')
     indexToState = pickle.load(file)
 
-
+    useCVAR=False
 
     if args.algo == "a2c":
         algo = torch_ac.A2CAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
@@ -233,7 +233,7 @@ if __name__ == '__main__':
         algo = torch_ac.PPOAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
                                 args.entropy_coef, args.value_loss_coef, args.max_grad_norm, args.recurrence,
                                 args.optim_eps, args.clip_eps, args.epochs, args.batch_size, preprocess_obss,
-                                None,useKL,KLweight,stateToIndex,demonstratorSSRep)
+                                None,useKL,KLweight,stateToIndex,demonstratorSSRep,useCVAR)
     else:
         raise ValueError("Incorrect algorithm name: {}".format(args.algo))
 
