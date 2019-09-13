@@ -209,7 +209,7 @@ if __name__ == '__main__':
         algo = torch_ac.PPOAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
                                 args.entropy_coef, args.value_loss_coef, args.max_grad_norm, args.recurrence,
                                 args.optim_eps, args.clip_eps, args.epochs, args.batch_size, preprocess_obss,
-                                None,useKL)
+                                None,useKL,useCVAR=useCVAR)
     else:
         raise ValueError("Incorrect algorithm name: {}".format(args.algo))
 
