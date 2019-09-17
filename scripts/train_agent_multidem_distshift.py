@@ -222,7 +222,7 @@ if __name__ == '__main__':
     file = open('indexToState_distshift.pkl', 'rb')
     indexToState = pickle.load(file)
 
-    useCVAR=False
+    useCVAR=True
 
     if args.algo == "a2c":
         algo = torch_ac.A2CAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
