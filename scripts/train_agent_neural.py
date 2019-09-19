@@ -198,7 +198,7 @@ if __name__ == '__main__':
 
     neural_density = NeuralDensity(nd_sess)
 
-    useCVAR=True
+    useCVAR=False
 
     if args.algo == "a2c":
         algo = torch_ac.A2CAlgo(envs, acmodel, args.frames_per_proc, args.discount, args.lr, args.gae_lambda,
