@@ -281,7 +281,7 @@ if __name__ == '__main__':
         else:
             stateOccupancyList = []
         decay += 1
-        logs2 = algo.update_parameters(exps,stateOccupancyList,decay,1)
+        logs2 = algo.update_parameters(exps,stateOccupancyList,decay,len(demonstratorSSRep))
         logs = {**logs1, **logs2}
         update_end_time = time.time()
 

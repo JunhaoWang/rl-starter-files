@@ -218,6 +218,7 @@ if __name__ == '__main__':
     print("KL weight : %s" %KLweight)
     file = open('demonstratorSSrep_' + str(args.nameDemonstrator) +'.pkl', 'rb')
     demonstratorSSRep = pickle.load(file)
+
     file = open('stateToIndex.pkl', 'rb')
     stateToIndex = pickle.load(file)
     file = open('indexToState.pkl', 'rb')
