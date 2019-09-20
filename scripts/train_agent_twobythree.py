@@ -284,7 +284,7 @@ if __name__ == '__main__':
             #print('indexedTraj: ', asizeof.asizeof(indexedTraj))
             #print('stateOccupancyList: ', asizeof.asizeof(stateOccupancyList))
 
-            stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
+            stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateAverage, method='every')
 
             #print('288: ', process.memory_info().rss)
             #print('stateOccupancyList: ', asizeof.asizeof(stateOccupancyList))

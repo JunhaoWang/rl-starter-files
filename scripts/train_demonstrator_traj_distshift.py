@@ -321,7 +321,7 @@ if __name__ == '__main__':
 
     #print(stateOccupancyList)
 
-    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateVAE,method='every')
+    stateOccupancyList = getSSRepHelperMeta(stateOccupancyList,len(stateToIndex),aggregateAverage,method='every')
     #print(stateOccupancyList)
 
     import pickle
