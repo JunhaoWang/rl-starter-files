@@ -275,7 +275,7 @@ if __name__ == '__main__':
                 indexedTraj = getStateIndexTraj(optimal_trajs[i], stateToIndex, indexToState)
                 stateOccupancyList.append(indexedTraj)
 
-            stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateVAE, method='every')
+            stateOccupancyList = getSSRepHelperMeta(stateOccupancyList, len(stateToIndex), aggregateAverage, method='every')
 
             #print(stateOccupancyList)
         else:
